@@ -1,0 +1,18 @@
+$breakpoints: (
+  // 1100px以下のモニタで適用
+  'xl': 'screen and (max-width: 1100px)',
+  // 944px以下のモニタで適用
+  'lg': 'screen and (max-width: 944px)',
+  // 742px以下のモニタで適用
+  'md': 'screen and (max-width: 742px)',
+  // 680px以下のモニタで適用
+  'sm': 'screen and (max-width: 680px)',
+  // 465px以下のモニタで適用
+  'ssm': 'screen and (max-width: 465px)'
+) !default;
+
+@mixin mq($breakpoint: md) {
+  @media #{map-get($breakpoints, $breakpoint)} {
+    @content;
+  }
+}

@@ -1,0 +1,325 @@
+@use '../globals' as *;
+
+//ヒーローセクション 単語数
+.hero__count {
+  color: $cTextGray;
+  font-weight: 600;
+  padding-top: 10px;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+
+  .hero__count-icon {
+    padding-right: 5px;
+  }
+}
+
+// QRコード
+.download-qr {
+  position: fixed;
+  right: 20px;
+  bottom: 50vh;
+  z-index: 100;
+  width: 14%;
+  height: auto;
+  padding: 1rem;
+  text-align: center;
+
+  @include mq(md) {
+    display: none;
+  }
+}
+
+// ページネーション
+.pagination {
+  display: flex;
+  justify-content: right;
+  margin: 3.2rem 0;
+  @include mq(md) {
+    justify-content: center;
+  }
+
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__item {
+    font-size: 1.4rem;
+  }
+
+  &__link {
+    font-size: 1.6rem;
+    border-radius: 4px;
+    color: $cTextBlue;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &.is-current {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
+
+  &__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid $cBorderGray;
+    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    cursor: pointer;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      stroke: $cTextBlue;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+      svg {
+        stroke: $cTextGray;
+      }
+    }
+  }
+}
+
+.pagination-top {
+  @include mq(md) {
+    display: none;
+  }
+}
+
+// 単語カード
+.word-card {
+  border-bottom: 1px dotted $cBorderGray;
+  display: flex;
+  flex-direction: column;
+
+  &__inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 8px 16px 40px;
+    @include mq(md) {
+      flex-direction: column;
+      padding: 16px;
+      gap: 1.2rem;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    min-width: 220px;
+    @include mq(md) {
+      flex-direction: row;
+    }
+  }
+
+  &__index {
+    font-weight: 500;
+    font-size: 1.4rem;
+    padding-bottom: 6px;
+  }
+
+  &__english {
+    font-size: 2.4rem;
+    font-weight: 700;
+    padding-bottom: 12px;
+    @include mq(md) {
+      font-size: 2rem;
+    }
+  }
+
+  &__pronunciation {
+    font-size: 1.4rem;
+    font-weight: 700;
+    padding-bottom: 12px;
+  }
+
+  &__sound {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__details {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 24px;
+    font-size: 1.5rem;
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      top: -18px;
+      left: -32px;
+      width: 1px;
+      height: 200%;
+      background-color: $cBorderGray;
+      @include mq(md) {
+        display: none;
+      }
+    }
+    @include mq(md) {
+      margin-left: 24px;
+      background-color: #f5fffe;
+      border-radius: 5px;
+      padding: 12px;
+      margin-top: 0;
+      width: 95%;
+      font-size: 1.4rem;
+    }
+  }
+  .part-of-speech__area {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 12px;
+    column-gap: 24px;
+    padding-bottom: 16px;
+    @include mq(md) {
+      flex-direction: column;
+    }
+  }
+
+  .word-card__part-of-speech {
+    font-weight: 700;
+    margin-right: 0.5rem;
+    font-weight: bold;
+    background: $cBase;
+    border: $cTextBlue 1px solid;
+    font-size: 1.2rem;
+    padding: 0px 3px;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    @include mq(md) {
+      font-size: 1.1rem;
+      padding: 0px 2px;
+    }
+  }
+  &__main-meaning {
+    .word-card__translation {
+      line-height: 2.2rem;
+      .highlight {
+        color: $cTextRed;
+        font-size: 1.8rem;
+        @include mq(md) {
+          font-size: 1.4rem;
+        }
+      }
+    }
+  }
+
+  &__phrase,
+  &__derivative,
+  &__antonym {
+    font-size: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 12px;
+    column-gap: 24px;
+    padding-bottom: 16px;
+    @include mq(md) {
+      padding-bottom: 8px;
+      font-size: 1.4rem;
+    }
+
+    .word-card__icon {
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+    .word-card__phrase-translation,
+    .word-card__derivative-pos,
+    .word-card__derivative-meaning,
+    .word-card__antonym-meaning,
+    .word-card__antonym-pos {
+      color: $cTextGray;
+    }
+    .word-card__derivative-pos,
+    .word-card__antonym-pos {
+      font-weight: 700;
+      margin-right: 0.5rem;
+      font-weight: bold;
+      background: $cBase;
+      border: $cTextGray 1px solid;
+      font-size: 1.1rem;
+      padding: 0 3px;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+      @include mq(md) {
+        font-size: 1.1rem;
+        padding: 0 2px;
+      }
+    }
+  }
+
+  &__example {
+    .word-card__example-en {
+      font-size: 1.5rem;
+      padding-bottom: 8px;
+    }
+
+    .word-card__example-ja {
+      font-size: 1.4rem;
+      color: $cTextGray;
+    }
+
+    .word-card__example-prefix {
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__image-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @include mq(md) {
+      display: none;
+    }
+    .word-card__image {
+      width: 100%;
+      max-width: 150px;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+}
+.word-card:last-of-type {
+  .word-card__details::before {
+    top: -18px;
+    height: calc(100% + 50px);
+  }
+}
+.word-area {
+  @include mq(md) {
+    padding-left: 24px;
+  }
+}

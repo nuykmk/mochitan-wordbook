@@ -1,0 +1,114 @@
+@use '../scss/globals/' as *;
+
+.recommend-swiper {
+  margin-top: 7.2rem;
+
+  &__heading {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+
+  .swiper {
+    padding-bottom: 3rem;
+    @include mq(md) {
+      padding-bottom: 0;
+    }
+  }
+
+  .swiper-slide {
+    width: auto;
+    max-width: 240px;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+
+    .book-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      width: 238px;
+      height: auto;
+      @include mq(xl) {
+        width: 212px;
+      }
+      @include mq(lg) {
+        width: 193px;
+      }
+      @include mq(md) {
+        width: 172px;
+      }
+
+      &__img {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+
+      &__body {
+        padding: 1rem;
+      }
+
+      &__title {
+        font-size: 1.2rem;
+        text-align: left;
+      }
+    }
+  }
+
+  &__nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    width: 155px;
+    text-align: center;
+    margin: 0 auto;
+    @include mq(md) {
+      display: none;
+    }
+
+    .recommend-swiper__arrow {
+      all: unset;
+      border: 1px solid $cBorderGray;
+      border-radius: 10px;
+      width: 76px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      svg {
+        width: 16px;
+        height: 16px;
+        stroke: $cTextBlue;
+        transition: stroke 0.2s ease;
+      }
+      &:hover:not(:disabled) {
+        background-color: rgba(0, 81, 114, 0.08);
+      }
+
+      &:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
+    }
+
+    .swiper-pagination-custom {
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: $cTextBlue;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+      &::after {
+        display: none;
+      }
+    }
+  }
+}

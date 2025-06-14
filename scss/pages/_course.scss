@@ -1,0 +1,36 @@
+@use '../globals' as *;
+
+.course-list {
+  width: 100%;
+
+  order: 1;
+  flex: 1;
+  @include mq(md) {
+    order: 2;
+    width: 100%;
+    margin: 0 auto;
+    justify-items: center;
+  }
+}
+// 単語帳カード一覧
+.course-category {
+  margin-bottom: 24px;
+  &__heading {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  &__items {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); // PCで4列
+    gap: 1.5rem;
+    @include mq(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @include mq(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}

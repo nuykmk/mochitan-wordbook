@@ -1,0 +1,195 @@
+@use '../globals' as *;
+
+//  並び替え / フィルタ / 印刷
+
+.word-list__controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2.2rem 1.2rem;
+  border-bottom: 1px solid $cBorderGray;
+  border-top: 1px solid $cBorderGray;
+  margin-bottom: 32px;
+  position: relative;
+  @include mq(md) {
+    justify-content: space-between;
+    padding: 1.6rem 0;
+  }
+}
+
+.sort-icon {
+  width: 18px;
+  height: auto;
+  cursor: pointer;
+}
+
+.sort-dropdown {
+  position: relative;
+
+  .sort-dropdown__button {
+    font-size: 1.5rem;
+    font-weight: 700;
+    @include mq(md) {
+      font-size: 1.3rem;
+    }
+  }
+  &__menu {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid $cBorderGray;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    display: none;
+    width: 112px;
+
+    .sort-dropdown__item {
+      padding: 0.8rem 1.5rem;
+      font-size: 1.4rem;
+      cursor: pointer;
+      position: relative;
+      @include mq(md) {
+        font-size: 1.3rem;
+      }
+
+      &.is-active {
+        background-color: #eef8fd;
+        font-weight: bold;
+        &::after {
+          content: '✓';
+          position: absolute;
+          right: 1.5rem;
+          top: 40%;
+          transform: translateY(-50%);
+          color: #1cb0f6;
+          font-size: 1.4rem;
+          font-weight: bold;
+        }
+      }
+
+      &:hover {
+        background-color: #f5fffe;
+      }
+    }
+  }
+
+  &.is-open .sort-dropdown__menu {
+    display: block;
+  }
+}
+
+// 表示切り替え
+.display-toggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid $cBorderGray;
+  border-radius: 4px;
+  &__btn {
+    background-color: $cBase;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+    border-right: 1px solid $cBorderGray;
+    @include mq(md) {
+      font-size: 1.2rem;
+    }
+    &:last-child {
+      border-right: none;
+    }
+    &.is-active {
+      background-color: #ddf4ff;
+      color: $cTextBlue;
+      position: relative;
+      padding-right: 3.2rem;
+      font-weight: 700;
+      &::after {
+        content: '✓';
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #1cb0f6;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+    }
+  }
+}
+.is-hidden-ja {
+  background-color: $cBgGray !important;
+  color: transparent !important;
+  text-shadow: none !important;
+  user-select: none !important;
+  -webkit-text-fill-color: transparent !important;
+}
+.is-hidden-en {
+  background-color: $cBgGray !important;
+  color: transparent !important;
+  text-shadow: none !important;
+  user-select: none !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+// 印刷
+.print-button {
+  margin-left: auto;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+
+    background: none;
+    border: none;
+    color: $cTextBlue;
+    cursor: pointer;
+    &:hover {
+      font-weight: 700;
+    }
+
+    img {
+      width: 18px;
+      height: auto;
+    }
+  }
+  @include mq(md) {
+    display: none;
+  }
+}
+
+// 印刷範囲
+@media print {
+  .header,
+  .breadcrumb,
+  .search-bar,
+  .recommend-swiper,
+  .pagination:last-of-type,
+  .download-qr,
+  .footer,
+  .print-button__wrapper,
+  .display-toggle {
+    display: none !important;
+  }
+
+  #hero,
+  .pagination:first-of-type,
+  .word-list,
+  .word-card {
+    display: block !important;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    visibility: visible !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+  .word-card {
+    page-break-inside: avoid;
+  }
+}

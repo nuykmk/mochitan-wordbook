@@ -1,0 +1,53 @@
+@use '../globals' as *;
+
+img {
+  max-width: 100%;
+}
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+}
+body {
+  font-family: $fontPrimary;
+  color: $cTextBlue;
+}
+.no-scroll {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+}
+main {
+  padding-top: 58px;
+  @include mq(sm) {
+    padding-top: 45px;
+  }
+}
+.inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 0 88px;
+  @include mq(xl) {
+    padding: 0 5% 88px;
+  }
+}
+.back-to-top {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  text-align: right;
+  margin-top: 2rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  a {
+    color: $cTextBlue;
+    font-weight: 600;
+    padding-bottom: 5px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+    &:hover {
+      padding-bottom: 3px;
+      border-bottom: $cTextBlue 1px solid;
+    }
+  }
+}

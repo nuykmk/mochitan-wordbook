@@ -1,0 +1,267 @@
+@use '../globals' as *;
+
+.header {
+  color: $cBase;
+  background: linear-gradient(90deg, #007bbd, #28c9be);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.header__inner {
+  max-width: 1440px;
+  padding: 3px 1.1%;
+  margin: 0 auto;
+  height: 58px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  @include mq(sm) {
+    height: 45px;
+  }
+}
+
+.header__logo {
+  font-size: 2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  @include mq(sm) {
+    font-size: 1.5rem;
+  }
+  span {
+    color: #ffd875;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-left: 12px;
+    @include mq(md) {
+      display: none;
+    }
+  }
+  img {
+    @include mq(sm) {
+      width: 55px;
+      height: 45px;
+    }
+  }
+}
+
+.header__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  @include mq(xl) {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(180deg, #28c9be, #007bbd);
+    transform: translateX(100%);
+    pointer-events: none;
+    opacity: 1;
+    transition: all 0.3s ease;
+    z-index: 1000;
+
+    &.is-open {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+  }
+}
+
+.header__nav-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.5rem;
+  font-weight: 500;
+
+  @include mq(xl) {
+    flex-direction: column;
+    margin: 0 auto;
+    gap: 48px;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .header__nav-item {
+    position: relative;
+    padding-bottom: 5px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+    &:hover {
+      font-weight: 900;
+      border-bottom: $cBase 1px solid;
+    }
+  }
+
+  span {
+    opacity: 0.4;
+    @include mq(xl) {
+      display: none;
+    }
+  }
+
+  img {
+    padding-left: 4px;
+  }
+}
+
+.header__nav-btn {
+  border: $cTextBlue 1px solid;
+  padding: 8px 20px;
+  background-color: $cBase;
+  border-radius: 44px;
+  color: $cTextBlue;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-left: 8px;
+  transition: background-color 0.5s ease, color 0.5s ease;
+
+  &:hover {
+    background-color: $cTextBlue;
+    color: $cBase;
+  }
+
+  @include mq(xl) {
+    font-size: 1.5rem;
+    padding: 16px 32px;
+  }
+}
+
+.sp__nav-btn {
+  display: none;
+  @include mq(xl) {
+    display: initial;
+    border: $cTextBlue 1px solid;
+    padding: 5px 16px;
+    background-color: $cBase;
+    border-radius: 44px;
+    color: $cTextBlue;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+  @include mq(sm) {
+    font-size: 1.3rem;
+  }
+  img {
+    @include mq(sm) {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.hamburger {
+  display: none;
+
+  @include mq(xl) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+    z-index: 1001;
+
+    span {
+      display: block;
+      width: 100%;
+      height: 3px;
+      background: $cBase;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    &.is-open {
+      span:nth-child(1) {
+        transform: rotate(45deg) translate(8px, 7px);
+      }
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -5px);
+      }
+    }
+  }
+}
+
+.sp__nav {
+  display: none;
+  @include mq(xl) {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+}
+
+.sp__nav-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, #3dc9c0, #0b6faf);
+  z-index: 1000;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  @include mq(sm) {
+    justify-content: flex-end;
+  }
+
+  &.is-open {
+    display: flex;
+  }
+
+  .sp__nav-list {
+    list-style: none;
+    margin-bottom: 2rem;
+
+    li {
+      margin-bottom: 4.8rem;
+
+      a {
+        color: $cBase;
+        text-decoration: none;
+        font-size: 2rem;
+        font-weight: 700;
+      }
+    }
+    .btn-download {
+      border: $cTextBlue 1px solid;
+      padding: 8px 20px;
+      background-color: $cBase;
+      border-radius: 44px;
+      color: $cTextBlue;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-left: 8px;
+      transition: background-color 0.5s ease, color 0.5s ease;
+
+      &:hover {
+        background-color: $cTextBlue;
+        color: $cBase;
+      }
+    }
+  }
+
+  .sp__nav-image {
+    img.hamburger__logo {
+      width: 160px;
+      height: auto;
+    }
+  }
+}

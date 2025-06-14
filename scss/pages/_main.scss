@@ -1,0 +1,147 @@
+@use '../globals' as *;
+// ヒーローセクション
+.hero__inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-top: 83px;
+  @include mq(xl) {
+    padding: 0 5%;
+  }
+
+  @include mq(md) {
+    margin-top: 83px;
+  }
+}
+.hero__wrapper {
+  margin-top: 0;
+  @include mq(md) {
+    margin-top: 83px;
+  }
+}
+.hero__title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-top: 32px;
+  @include mq(md) {
+    font-size: 2rem;
+  }
+}
+.hero__text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding-top: 10px;
+  margin-bottom: 16px;
+  @include mq(md) {
+    font-size: 1.3rem;
+    font-weight: 400;
+  }
+}
+.content-area {
+  display: flex;
+  gap: 2rem;
+  flex-direction: row;
+  @include mq(md) {
+    flex-direction: column;
+  }
+}
+.sidebar {
+  order: 2;
+  flex: 0 0 130px;
+}
+
+.book-list {
+  order: 1;
+  flex: 1;
+  @include mq(md) {
+    order: 2;
+    width: 100%;
+    margin: 0 auto;
+    justify-items: center;
+  }
+}
+
+.course-section {
+  margin-bottom: 38px;
+  &__heading {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  &__items {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    @include mq(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @include mq(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+.book-card {
+  background: $cBgBlue;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 172px;
+  @include mq(ssm) {
+    width: 160px;
+  }
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &__link {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+
+  // 画像ラッパー
+  &__img-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  // 中央の画像
+  &__img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  // 再生ボタン
+  &__play-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 2;
+
+    img {
+      width: 33px;
+      height: 33px;
+      display: block;
+    }
+  }
+
+  &__body {
+    padding: 1.75rem 0.8rem;
+  }
+
+  &__title {
+    font-size: 1.4rem;
+    font-weight: 500;
+  }
+}

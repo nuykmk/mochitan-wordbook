@@ -1,0 +1,48 @@
+@use '../globals' as *;
+
+.breadcrumb {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: $cTextGray;
+  margin-top: 83px;
+  @include mq(md) {
+    display: none;
+  }
+  .breadcrumb__inner {
+    max-width: 1440px;
+    padding: 0 4rem;
+    margin: 0 auto;
+  }
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+
+    &:not(:last-child)::after {
+      content: '/';
+      display: inline-block;
+      margin: 0 0.5rem;
+      color: $cTextGray;
+    }
+
+    a {
+      text-decoration: none;
+      color: $cTextGray;
+
+      &:hover {
+        text-decoration: underline;
+      }
+      &[aria-current='page'] {
+        color: $cTextBlue;
+        font-weight: bold;
+      }
+    }
+  }
+}

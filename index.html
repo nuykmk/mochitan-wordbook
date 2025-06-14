@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>モチタン英単語帳</title>
+  <link rel="shortcut icon" href="image/favicon.ico" type="image/x-icon">
+
+  <!-- SEO対策 -->
+  <meta name="description" content="モチタンの英単語帳ページです。" /><!-- 実際のサイト説明文に置き換えてください -->
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://example.com/"> <!-- 実際のURLに置き換えてください -->
+  <!-- font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <header id="header" class="header">
+    <div class="header__inner">
+
+      <h1 class="header__logo">
+        <img src="image/header__logo.png" alt="ヘッダーロゴ">
+        <a href="index.html">モチタン英単語帳<span>英検・TOEIC・大学受験・高校受験対応！</span></a>
+      </h1>
+      <nav class="header__nav" id="js-nav">
+        <ul class="header__nav-list">
+          <li class="header__nav-item"><a href="#">単語帳 一覧</a></li>
+          <span>・</span>
+          <li class="header__nav-item"><a href="#">モチタンとは</a></li>
+          <span>・</span>
+          <li class="header__nav-item"><a href="#">フィードバック<img src="image/quiz.png" alt=""></a></li>
+          <li class="header__nav-btn"><a href="#">公式アプリダウンロード</a></li>
+        </ul>
+      </nav>
+
+      <!-- sp__nav -->
+      <div class="sp__nav">
+
+        <button class="sp__nav-btn"><a href="#">公式アプリ<img src="image/download.png" alt=""></a></button>
+        <div class="hamburger" id="js-hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- スマホ用メニュー本体 -->
+      <nav class="sp__nav-menu" id="js-hamburger-menu">
+        <ul class="sp__nav-list">
+          <li><a href="#">単語帳 一覧</a></li>
+          <li><a href="#">モチタンとは</a></li>
+          <li><a href="#">フィードバック <img src="image/quiz.png" alt=""></a></li>
+          <li><a href="#" class="btn-download">公式アプリダウンロード</a></li>
+        </ul>
+
+        <!-- モチベアー画像 -->
+        <div class="sp__nav-image">
+          <img src="image/hamburger_mochibear.png" alt="モチベアー" class="hamburger__logo">
+        </div>
+      </nav>
+    </div>
+
+
+  </header>
+
+  <main id="main" class="main">
+    <!-- 検索バー -->
+    <section id="search-bar" class="search-bar">
+      <div class="search-bar__inner">
+
+        <form class="search-bar__form" role="search" aria-label="単語検索">
+          <label for="search-input" class="search-bar__label"></label>
+          <div class="search-bar__input-wrapper">
+            <div class="search-bar__input-inner">
+              <img src="image/Search_Icon.png" alt="検索アイコン" class="search-bar__icon">
+              <input type="text" id="search-input" class="search-bar__input" placeholder="モチタン収録英単語 (11,291語)から検索"
+                name="keyword">
+            </div>
+            <!-- 検索候補のドロップダウン -->
+            <div id="js-search-results" class="search-bar__results" aria-live="polite"></div>
+          </div>
+          <button type="submit" class="search-bar__button">検索</button>
+        </form>
+      </div>
+    </section>
+    <!-- 🔽 オーバーレイ -->
+    <div id="search-overlay" class="search-overlay"></div>
+    <!-- 検索結果なしモーダル -->
+    <div id="js-no-result-modal" class="no-result-modal" aria-hidden="true" role="alertdialog">
+      <div class="no-result-modal__content">
+        <img src="image/search_mochitan.png" alt="モチタンくん泣き顔" class="no-result-modal__image" />
+        <p class="no-result-modal__text">
+          「<span id="js-no-result-keyword"></span>」 に一致する単語が見つかりませんでした。
+        </p>
+        <p class="no-result-modal__subtext">
+          ご希望の単語はまだ登録されていないようです。<br>
+          リクエストを送っていただければ、追加を検討します！
+        </p>
+        <div class="no-result-modal__actions">
+          <button class="no-result-modal__btn" id="js-clear-search"> ＋　単語の追加をリクエスト</button>
+        </div>
+        <!-- モーダル外・中央に表示される閉じるボタン -->
+        <div class="no-result-modal__close-outer">
+          <button class="no-result-modal__close-btn" id="js-close-no-result">閉じる</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ヒーローセクション -->
+    <section id="hero" class="hero">
+      <div class="hero__inner">
+        <h2 class="hero__title">単語帳 一覧</h2>
+        <p class="hero__text">目的別にまとめた英単語帳を掲載しています。レベルやテーマに合わせて、自分にぴったりの単語帳を選んでみましょう</p>
+      </div>
+    </section>
+
+    <!-- メインレイアウト -->
+    <div class="inner">
+      <div class="content-area">
+
+        <!-- カテゴリサイドバー -->
+        <aside id="sidebar" class="sidebar">
+          <ul class="sidebar__list">
+            <!-- JavaScriptで生成 -->
+          </ul>
+        </aside>
+
+        <!-- 単語帳カード一覧 -->
+        <section id="book-list" class="book-list">
+          <!-- JavaScriptで生成 -->
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- モーダル -->
+  <div class="word-modal" id="wordModal" aria-hidden="true">
+    <div class="word-modal__overlay" id="js-word-modal-overlay">
+      <div class="word-modal__content" role="dialog" aria-modal="true" aria-labelledby="wordModalTitle">
+
+        <button class="word-modal__close" id="js-word-modal-close" aria-label="閉じる">
+          <img src="image/modal-close.png" alt="閉じるアイコン" class="word-modal__close-img">
+        </button>
+        <div class="word-modal__inner">
+
+          <!-- ヘッダー：単語・発音・画像 -->
+          <div class="word-modal__header">
+            <div class="word-modal__title-wrapper">
+              <h2 class="word-modal__title" id="wordModalTitle">
+                <span class="word-modal__title-text"></span>
+                <button class="word-modal__sound" data-audio="wordsound/present_1.mp3" aria-label="発音再生">
+                  <img src="image/btn_sound.png" alt="発音を再生">
+                </button>
+              </h2>
+              <p class="word-modal__pronunciation"><span class="word-modal__pronunciation-text">
+                </span></p>
+              <section class="meanings__section">
+                <h3 class="word-modal__section-title">意味</h3>
+                <ul class="word-modal__meanings">
+                  <li><span class="highlight"></span></li>
+                  <li></li>
+                  <li></li>
+                </ul>
+              </section>
+            </div>
+            <div class="word-modal__image-wrapper">
+              <img src="Img/junior/present.jpg" alt="presentのイラスト" class="word-modal__image">
+            </div>
+          </div>
+
+          <div class="word-modal__body">
+            <section class="word-modal__section">
+              <h3 class="word-modal__section-title">例文</h3>
+              <div class="word-modal__example">
+                <p class="word-modal__example-en">
+                  <span class="highlight"></span>
+                  <button class="word-modal__example-sound word-modal__sound" data-audio="wordsound/present_1.mp3"
+                    aria-label="例文の音声再生">
+                    <img src="image/btn_sound.png" alt="発音再生">
+                  </button>
+                </p>
+                <p class="word-modal__example-ja"></p>
+              </div>
+            </section>
+
+            <section class="word-modal__section">
+              <h3 class="word-modal__section-title">関連語</h3>
+              <div class="word-modal__related">
+                <p class="word-modal__related-item"></p>
+                <p class="word-modal__related-item"></p>
+              </div>
+            </section>
+
+            <section class="word-modal__section">
+              <h3 class="word-modal__section-title">使い方</h3>
+              <ul class="word-modal__usage">
+                <li>
+                  <p class="word-modal__usage-en"><span class="highlight"></span></p>
+                  <p class="word-modal__usage-ja"></p>
+                </li>
+                <li>
+                  <p class="word-modal__usage-en"><span class="highlight"></span>
+                  </p>
+                  <p class="word-modal__usage-ja"></p>
+                </li>
+                <li>
+                  <p class="word-modal__usage-en"><span class="highlight"></span>
+                  </p>
+                  <p class="word-modal__usage-ja"></p>
+                </li>
+              </ul>
+            </section>
+
+            <section class="word-modal__section">
+              <h3 class="word-modal__section-title">ニュアンス</h3>
+              <p class="word-modal__nuance">
+              </p>
+            </section>
+
+            <section class="word-modal__section">
+              <h3 class="word-modal__section-title">英英</h3>
+              <p class="word-modal__english-def">
+              </p>
+            </section>
+
+            <button class="word-modal__report">
+              <img src="image/quiz_blue.png" alt="報告アイコン">
+              単語を報告
+            </button>
+          </div>
+        </div>
+        <div class="word-modal__footer">
+          <div class="word-modal__nav">
+            <button class="word-modal__nav-btn">&lt;</button>
+            <button class="word-modal__nav-btn word-modal__nav-btn-right"> &gt;</button>
+          </div>
+        </div>
+
+      </div>
+      <!-- モーダル外・中央に表示される閉じるボタン -->
+      <div class="word-modal__close-outer">
+        <button class="word-modal__close-btn">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPへボタン -->
+  <div id="backToTop" class="back-to-top">
+    <a href="#main">↑ TOPへ</a>
+  </div>
+
+  <!-- フッター -->
+  <footer id="footer" class="footer">
+
+    <!-- 上部：アプリ紹介セクション -->
+    <div class="footer__promo">
+      <div class="footer__promo-inner">
+
+        <!-- 画像部分 -->
+        <div class="footer__promo-image">
+          <img src="image/mochitan.png" alt="モチタンキャラクター" />
+        </div>
+
+        <!-- テキスト＋ボタンまとめたカラム -->
+        <div class="footer__promo-content">
+          <div class="footer__promo-text">
+            <h2 class="footer__promo-title">モチタン</h2>
+            <p class="footer__promo-subtitle">モチベーションを科学する英単語アプリ</p>
+          </div>
+          <div class="footer__promo-image-sp">
+            <img src="image/mochitan.png" alt="モチタンキャラクター" />
+          </div>
+          <div class="footer__promo-buttons">
+            <div class="footer__promo-store-buttons">
+              <a href="#" class="footer__promo-button">
+                <img src="image/btn_appStore.png" alt="App Storeからダウンロード" />
+              </a>
+              <a href="#" class="footer__promo-button">
+                <img src="image/btn_playStore.png" alt="Google Playで手に入れよう" />
+              </a>
+            </div>
+            <a href="#" class="footer__promo-button footer__promo-button--main">公式ホームページ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 下部：ナビゲーション・著作権 -->
+    <div class="footer__nav">
+      <div class="footer__nav-inner">
+
+        <div class="footer__brand">
+          <div class="footer__logo-wrapper">
+            <a href="#">
+
+              <img src="image/footer_logo.png" alt="モチタンロゴ" class="footer__brand-logo" />
+              <div>
+                <strong>モチタン英単語帳</strong>
+              </div>
+            </a>
+          </div>
+          <p class="footer__brand-text">モチタン英単語帳は、モチベーションを科学する英単語<br>
+            アプリ「モチタン」が提供する英単語学習サービスです</p>
+        </div>
+
+        <div class="footer__links">
+          <div class="footer__links-list-wrapper">
+            <ul class="footer__link-list">
+              <li><a href="#">単語一覧</a></li>
+              <li><a href="#">モチタンとは</a></li>
+            </ul>
+            <ul class="footer__link-list footer__link-list-second">
+              <li><a href="#">利用規約</a></li>
+              <li><a href="#">プライバシーポリシー</a></li>
+              <li><a href="#">フィードバック<span><img src="image/quiz_footer.png" alt=""></span></a></li>
+              <li><a href="#">運営会社</a></li>
+            </ul>
+
+          </div>
+          <div class="footer__sns">
+            <a href="#"><img src="image/x.png" alt="X (旧Twitter)" /></a>
+            <a href="#"><img src="image/tiktok.png" alt="TikTok" /></a>
+            <a href="#"><img src="image/youtube.png" alt="YouTube" /></a>
+          </div>
+        </div>
+
+      </div>
+      <div class="footer__copyright">
+        &copy; 2025 Astran. All rights reserved.
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- 共通ライブラリ -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <!-- course.html index.htmlのみのJS -->
+  <script src="js/load-sidebar.js"></script>
+  <!-- 共通のJS（全ページで使う） -->
+  <script src="js/load-book-list.js"></script>
+  <script src="js/word-list-pagination.js"></script>
+  <script src="js/word-list-controls.js"></script>
+  <script src="js/word-detail.js"></script>
+  <script src="js/word-modal.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
