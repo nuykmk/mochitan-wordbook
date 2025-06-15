@@ -96,12 +96,6 @@
   }
 }
 
-.pagination-top {
-  @include mq(md) {
-    display: none;
-  }
-}
-
 // 単語カード
 .word-card {
   border-bottom: 1px dotted $cBorderGray;
@@ -143,9 +137,13 @@
   &__english {
     font-size: 2.4rem;
     font-weight: 700;
-    padding-bottom: 12px;
+    padding-bottom: 15px;
     @include mq(md) {
       font-size: 2rem;
+    }
+    .word-highlight {
+      display: inline;
+      border-bottom: 1px solid $cTextBlue; // 色や太さはお好みで
     }
   }
 
@@ -306,7 +304,7 @@
     }
     .word-card__image {
       width: 100%;
-      max-width: 150px;
+      // max-width: 150px;
       height: auto;
       object-fit: contain;
     }

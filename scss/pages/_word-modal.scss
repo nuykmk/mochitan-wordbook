@@ -13,18 +13,23 @@
   }
 
   &__overlay {
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: 900;
+    overflow-y: auto;
   }
 
   &__content {
-    margin-top: 136px !important;
-    background: $cBase;
-    max-width: 640px;
-    max-height: 75vh;
     margin: 0 auto 4rem;
+    margin-top: 100px;
+    background: $cBase;
+    width: 640px;
+    height: 75vh;
     border-radius: 12px;
     position: relative;
     z-index: 1000;
@@ -32,9 +37,9 @@
     padding-bottom: 18px;
     overflow-y: auto;
     @include mq(sm) {
-      //追加
+      margin-top: 65px;
       width: 90%;
-      height: 63vh;
+      // height: 63vh;
     }
   }
 
@@ -111,6 +116,7 @@
         margin-bottom: 0.5rem;
         text-align: left;
         font-size: 1.4rem;
+        line-height: 1.7;
         @include mq(md) {
           font-size: 1.3rem;
         }
@@ -243,7 +249,11 @@
 .word-modal__close-outer {
   display: flex;
   justify-content: center;
-  margin-top: 25px;
+  margin-bottom: 15px;
+  // margin-top: 25px;
+  // @include mq(sm) {
+  //   margin-top: 15px;
+  // }
   .word-modal__close-btn {
     background: $cBase;
     padding: 1.2rem 4.3rem;

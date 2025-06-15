@@ -33,12 +33,21 @@ main {
   display: none;
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  right: 15%;
   z-index: 1000;
   text-align: right;
   margin-top: 2rem;
   font-size: 1.4rem;
   font-weight: 700;
+  @include mq(xl) {
+    right: 10%;
+  }
+  @include mq(md) {
+    right: 3%;
+  }
+  @include mq(ssm) {
+    display: none;
+  }
   a {
     color: $cTextBlue;
     font-weight: 600;

@@ -2,7 +2,7 @@
 
 .search-bar__results {
   position: absolute;
-  top: 43px;
+  top: 46px;
   left: 0;
   width: 100%;
   background: #fff;
@@ -17,6 +17,7 @@
   @include mq(md) {
     width: calc(100% + 40px);
     left: -20px;
+    top: 55px;
     box-shadow: none;
   }
 }
@@ -30,8 +31,13 @@
     .search-bar__highlight {
       background-color: rgba(49, 151, 200, 0.302);
       border-radius: 2px;
-      margin: 0 4px;
+      // margin: 0 4px;
       font-weight: 500;
+
+      margin: 0;
+      display: inline;
+      white-space: nowrap;
+      letter-spacing: normal;
     }
   }
 }

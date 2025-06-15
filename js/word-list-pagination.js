@@ -22,10 +22,21 @@ function getCourseFromURL() {
 
 // ✅ 品詞マッピング（日本語表記用）
 const partOfSpeechMap = {
-  verb: "動", noun: "名", adjective: "形",
-  adverb: "副", preposition: "前", conjunction: "接",
-  interjection: "感", pronoun: "代", auxiliary: "助",
-  article: "冠", phrase: "句", idiom: "熟"
+      verb: "動",
+      noun: "名",
+      adjective: "形",
+      adverb: "副",
+      preposition: "前",
+      conjunction: "接",
+      interjection: "間投",       
+      pronoun: "代",
+      auxiliary: "助",            
+      auxiliary_verb: "助動",     
+      article: "冠",
+      phrase: "句",
+      idiom: "熟",
+      number: "数",               
+      ordinal_number: "序数"     
 };
 
 // ✅ titleタグ と meta description を更新する関数
@@ -263,18 +274,18 @@ async function loadAndRenderWordList() {
   // 指定ページに切り替え
   async function goToPage(page, options = {}) {
     currentPage = page;
+    console.log("✅ goToPage呼び出し", page);
   
     const start = (page - 1) * perPage;
     const pageWords = window.wordDataArray.slice(start, start + perPage);
   
-    // ✅ skipReload: true の場合は JSON を取得せずに描画する
     if (options.skipReload) {
-      renderWordList(pageWords); 
-      renderPagination(currentPage, Math.ceil(window.wordDataArray.length / perPage));
+      renderWordList(pageWords);
+      const totalCount = window.wordDataArray?.length || allWords.length || 0;
+      renderPagination(currentPage, Math.ceil(totalCount / perPage));
       return;
     }
   
-    // ✅ それ以外は従来通り JSON を取得して描画
     const wordDataWithJson = await Promise.all(
       pageWords.map(async word => {
         const path = `${dictionaryPath}${word.id}.json`;
@@ -292,6 +303,46 @@ async function loadAndRenderWordList() {
     renderWordList(wordDataWithJson);
     renderPagination(currentPage, Math.ceil(allWords.length / perPage));
   }
+//   async function goToPage(page, options = {}) {
+//     console.log("✅ goToPage呼び出し", page);
+    
+// console.log("📦 window.wordDataArray:", window.wordDataArray);
+// console.log("🔢 slice結果:", window.wordDataArray?.slice?.((page - 1) * perPage, page * perPage));
+//     currentPage = page;
+  
+//     const start = (page - 1) * perPage;
+//     const pageWords = window.wordDataArray.slice(start, start + perPage);
+
+   
+  
+//     // ✅ skipReload: true の場合は JSON を取得せずに描画する
+//     if (options.skipReload) {
+//       renderWordList(pageWords); 
+//       // renderPagination(currentPage, Math.ceil(window.wordDataArray.length / perPage));
+//       const totalCount = window.wordDataArray?.length || allWords.length || 0;
+// renderPagination(currentPage, Math.ceil(totalCount / perPage));
+//       return;
+//     }
+  
+//     // ✅ それ以外は従来通り JSON を取得して描画
+//     const wordDataWithJson = await Promise.all(
+//       pageWords.map(async word => {
+//         const path = `${dictionaryPath}${word.id}.json`;
+//         try {
+//           const res = await fetch(path);
+//           if (!res.ok) throw new Error("404");
+//           const json = await res.json();
+//           return { ...word, json };
+//         } catch {
+//           return { ...word, json: {} };
+//         }
+//       })
+//     );
+  
+    
+//     renderWordList(wordDataWithJson);
+//     renderPagination(currentPage, Math.ceil(allWords.length / perPage));
+//   }
 
   // 単語リストをHTMLに出力
   function renderWordList(data) {
@@ -373,14 +424,16 @@ async function loadAndRenderWordList() {
           <div class="word-card__info">
             <div class="word-card__index">${index + 1 + (currentPage - 1) * perPage}</div>
             <div class="word-area">
-              <h3 class="word-card__english js-hide-en">${word.english}</h3>
+              <h3 class="word-card__english js-hide-en">
+              <span class="word-highlight">${word.english}</span>
+              </h3>
               <p class="word-card__pronunciation js-hide-en">${pronunciation}</p>
             </div>
             <button class="word-card__sound" data-audio="wordsound/${word.sound}_1.mp3">
               <img src="image/btn_sound.png" alt="発音再生">
             </button>
           </div>
-          <div class="word-card__details">
+          <div class="word-card__details" data-word-id="${word.id}">
             ${partOfSpeechAreaHTML}
             ${phrasesHTML}
             ${derivativesHTML}
@@ -400,19 +453,57 @@ async function loadAndRenderWordList() {
   }
   // ✅ ページネーション表示
   function renderPagination(current, total) {
+    const isSP = window.innerWidth <= 742;
+    const maxVisiblePages = isSP ? 3 : 5;
+    const isFirstPage = current === 1;
+    const isLastPage = current === total;
+  
     [paginationTop, paginationBottom].forEach(container => {
       container.innerHTML = '';
       const ul = document.createElement("ul");
       ul.className = "pagination__list";
-
+  
+      // ← 前へボタン
       const prev = document.createElement("li");
-      prev.innerHTML = `<button class="pagination__arrow" ${current === 1 ? "disabled" : ''}>&lt;</button>`;
-      prev.querySelector("button").addEventListener("click", () => goToPage(current - 1));
+      const prevButton = document.createElement("button");
+      prevButton.className = "pagination__arrow pagination__arrow--prev";
+      prevButton.setAttribute("aria-label", "前のページ");
+      prevButton.innerHTML = "&lt;";
+      if (isFirstPage) prevButton.disabled = true;
+      prevButton.addEventListener("click", () => {
+        if (!isFirstPage) goToPage(current - 1);
+      });
+      prev.appendChild(prevButton);
       ul.appendChild(prev);
-
-      const startPage = Math.floor((current - 1) / maxVisiblePages) * maxVisiblePages + 1;
-      const endPage = Math.min(startPage + maxVisiblePages - 1, total);
-
+  
+      // ======== ページ範囲の計算 ========
+      let startPage, endPage;
+  
+      if (total <= maxVisiblePages) {
+        startPage = 1;
+        endPage = total;
+      } else {
+        const half = Math.floor(maxVisiblePages / 2);
+        if (current <= half + 1) {
+          startPage = 1;
+          endPage = maxVisiblePages;
+        } else if (current >= total - half) {
+          startPage = total - maxVisiblePages + 1;
+          endPage = total;
+        } else {
+          startPage = current - half;
+          endPage = current + half;
+        }
+      }
+  
+      // ... 省略記号（前方）
+      if (startPage > 1) {
+        const dotsPrev = document.createElement("li");
+        dotsPrev.textContent = "...";
+        ul.appendChild(dotsPrev);
+      }
+  
+      // ======== ページ番号リンク ========
       for (let i = startPage; i <= endPage; i++) {
         const li = document.createElement("li");
         const a = document.createElement("a");
@@ -420,28 +511,55 @@ async function loadAndRenderWordList() {
         a.className = "pagination__link";
         if (i === current) a.classList.add("is-current");
         a.textContent = `[${(i - 1) * perPage + 1}-${Math.min(i * perPage, allWords.length)}]`;
+  
         a.addEventListener("click", e => {
           e.preventDefault();
-          goToPage(i);
+          goToPage(i, { skipReload: true });
         });
+  
         li.appendChild(a);
         ul.appendChild(li);
       }
-
+  
+      // ... 省略記号（後方）
       if (endPage < total) {
-        const dots = document.createElement("li");
-        dots.textContent = "...";
-        ul.appendChild(dots);
+        const dotsNext = document.createElement("li");
+        dotsNext.textContent = "...";
+        ul.appendChild(dotsNext);
       }
-
+  
+      // → 次へボタン
       const next = document.createElement("li");
-      next.innerHTML = `<button class="pagination__arrow" ${current === total ? "disabled" : ''}>&gt;</button>`;
-      next.querySelector("button").addEventListener("click", () => goToPage(current + 1));
+      const nextButton = document.createElement("button");
+      nextButton.className = "pagination__arrow pagination__arrow--next";
+      nextButton.setAttribute("aria-label", "次のページ");
+      nextButton.innerHTML = "&gt;";
+      if (isLastPage) nextButton.disabled = true;
+      nextButton.addEventListener("click", () => {
+        if (!isLastPage) goToPage(current + 1);
+      });
+      next.appendChild(nextButton);
       ul.appendChild(next);
-
+  
       container.appendChild(ul);
     });
   }
+
+
+  // リサイズ
+    currentPage = 1;
+    totalPages = 1;
+    window.addEventListener("resize", () => {
+    // ページ数を再計算（1ページあたりの表示数が変わる可能性あるため）
+    totalPages = Math.ceil(allWords.length / perPage);  
+    // ページネーション再描画
+    renderPagination(currentPage, totalPages);  
+    // 表示するデータだけ切り出して描画
+    const start = (currentPage - 1) * perPage;
+    const end = currentPage * perPage;
+    const currentData = allWords.slice(start, end);  
+    renderWordList(currentData);
+  });
 
  // ✅ 音声再生ボタン
   document.addEventListener("click", e => {

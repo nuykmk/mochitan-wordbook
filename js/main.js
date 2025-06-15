@@ -24,29 +24,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 検索バー
-document.addEventListener("DOMContentLoaded", () => {
-  const searchBar = document.querySelector(".search-bar");
-  if (!searchBar) return;
+// document.addEventListener("DOMContentLoaded", () => {
+//   const searchBar = document.querySelector(".search-bar");
+//   if (!searchBar) return;
 
-  // 最初は表示クラスを付ける
-  searchBar.classList.add("is-visible");
+//   // 最初は表示クラスを付ける
+//   searchBar.classList.add("is-visible");
 
-  let lastScroll = window.pageYOffset;
+//   let lastScroll = window.pageYOffset;
 
-  window.addEventListener("scroll", () => {
-    const currentScroll = window.pageYOffset;
+//   window.addEventListener("scroll", () => {
+//     const currentScroll = window.pageYOffset;
 
-    if (currentScroll > lastScroll) {
-      // 下スクロール → 非表示
-      searchBar.classList.remove("is-visible");
-    } else {
-      // 上スクロール → 表示
-      searchBar.classList.add("is-visible");
-    }
+//     if (currentScroll > lastScroll) {
+//       // 下スクロール → 非表示
+//       searchBar.classList.remove("is-visible");
+//     } else {
+//       // 上スクロール → 表示
+//       searchBar.classList.add("is-visible");
+//     }
 
-    lastScroll = currentScroll;
-  });
-});
+//     lastScroll = currentScroll;
+//   });
+// });
 
 // TOPボタン
 // ページがスクロールされたら実行

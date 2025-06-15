@@ -30,20 +30,49 @@ function showNoResultModal(keyword) {
 let searchWords = [];
 let selectedIndex = -1;
 
-// ✅ スクロールに応じた検索バー表示切替
+
+// ✅ スクロールに応じた検索バー表示制御（TP-04＋TP-37）
 document.addEventListener("DOMContentLoaded", () => {
   const searchBar = document.querySelector(".search-bar");
   if (!searchBar) return;
   searchBar.classList.add("is-visible");
 
   let lastScroll = window.pageYOffset;
+  let scrollBuffer = 0;
+
   window.addEventListener("scroll", () => {
     const currentScroll = window.pageYOffset;
-    if (currentScroll > lastScroll) {
-      searchBar.classList.remove("is-visible");
-    } else {
+    const scrollDelta = currentScroll - lastScroll;
+    scrollBuffer += scrollDelta;
+    
+    const suggestionOpen = document.querySelector("#js-search-results")?.children.length > 0;
+    console.log("📏 scrollDelta:", scrollDelta, "scrollBuffer:", scrollBuffer);
+
+    // ✅ TP-04: 検索候補が出ていたら常に表示
+    if (suggestionOpen) {
       searchBar.classList.add("is-visible");
+      scrollBuffer = 0;
+      lastScroll = currentScroll;
+      return;
     }
+
+
+    // ある程度スクロールしたときだけ非表示（TP-37対応）
+    if (scrollDelta > 0) {
+      // ✅ 下スクロール：累積カウント
+      scrollBuffer += scrollDelta;
+      // console.log("📏 scrollDelta:", scrollDelta, "累積:", scrollBuffer);
+  
+      if (scrollBuffer > 150) {
+        searchBar.classList.remove("is-visible");
+        scrollBuffer = 0;
+      }
+    } else if (scrollDelta < 0) {
+      // ✅ 上スクロール：即表示・リセット
+      searchBar.classList.add("is-visible");
+      scrollBuffer = 0;
+    }
+
     lastScroll = currentScroll;
   });
 });
@@ -63,28 +92,57 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
   
-    // 🔍 部分一致したものを抽出
-    let filtered = searchWords.filter(w =>
-      w.english.toLowerCase().includes(keyword.toLowerCase())
+    const lowerKeyword = keyword.toLowerCase();
+
+    // ✅ 完全一致＋先頭一致のみ（部分一致は除外）
+    const exactMatch = searchWords.filter(w => w.english.toLowerCase() === lowerKeyword);
+    const startsWith = searchWords.filter(w =>
+      w.english.toLowerCase().startsWith(lowerKeyword) &&
+      w.english.toLowerCase() !== lowerKeyword
     );
+
+    const filtered = [...exactMatch, ...startsWith];
+
+    // // 🔍 部分一致したものを抽出
+    // let filtered = searchWords.filter(w =>
+    //   w.english.toLowerCase().includes(keyword.toLowerCase())
+    // );
   
-    // ✅ 完全一致する単語が複数ある場合 → 最小IDの1件のみに絞る
-    const exactMatches = filtered.filter(w => w.english.toLowerCase() === keyword.toLowerCase());
-    if (exactMatches.length > 1) {
-      const minIdWord = exactMatches.reduce((min, w) =>
-        Number(w.id) < Number(min.id) ? w : min, exactMatches[0]
-      );
-      filtered = filtered.filter(w => w.english.toLowerCase() !== keyword.toLowerCase());
-      filtered.unshift(minIdWord);
-    }
+    // // ✅ 完全一致する単語が複数ある場合 → 最小IDの1件のみに絞る
+    // const exactMatches = filtered.filter(w => w.english.toLowerCase() === keyword.toLowerCase());
+    // if (exactMatches.length > 1) {
+    //   const minIdWord = exactMatches.reduce((min, w) =>
+    //     Number(w.id) < Number(min.id) ? w : min, exactMatches[0]
+    //   );
+    //   filtered = filtered.filter(w => w.english.toLowerCase() !== keyword.toLowerCase());
+    //   filtered.unshift(minIdWord);
+    // }
   
+    // const posMap = {
+    //   verb: "動", noun: "名", adjective: "形", adverb: "副",
+    //   preposition: "前", conjunction: "接", interjection: "感",
+    //   pronoun: "代", auxiliary: "助", article: "冠", phrase: "句", idiom: "熟"
+    // };
+
     const posMap = {
-      verb: "動", noun: "名", adjective: "形", adverb: "副",
-      preposition: "前", conjunction: "接", interjection: "感",
-      pronoun: "代", auxiliary: "助", article: "冠", phrase: "句", idiom: "熟"
+      verb: "動",
+      noun: "名",
+      adjective: "形",
+      adverb: "副",
+      preposition: "前",
+      conjunction: "接",
+      interjection: "間投",       
+      pronoun: "代",
+      auxiliary: "助",            
+      auxiliary_verb: "助動",     
+      article: "冠",
+      phrase: "句",
+      idiom: "熟",
+      number: "数",               
+      ordinal_number: "序数"      
     };
   
-    resultsBox.innerHTML = filtered.slice(0, 10).map(w => {
+    resultsBox.innerHTML = filtered.map(w => {
       const regex = new RegExp(`(${keyword})`, 'i');
       const highlighted = w.english.replace(regex, '<span class="search-bar__highlight">$1</span>');
       const part = posMap[w.part_of_speech] || "";
@@ -108,6 +166,10 @@ document.addEventListener("DOMContentLoaded", () => {
     renderResults(e.target.value);
     selectedIndex = -1;
   });
+  // ✅ TP-06: フォーカス時にも現在の値で候補を再表示
+input.addEventListener("focus", () => {
+  renderResults(input.value); // 今の文字を使って候補を復活
+});
 
   // ✅ 矢印キー＆Enterキー対応（入力欄にフォーカス中）
   input.addEventListener("keydown", (e) => {
@@ -157,7 +219,8 @@ document.addEventListener("DOMContentLoaded", () => {
         input.value = word.english;
         resultsBox.innerHTML = "";
         const overlay = document.getElementById("search-overlay");
-        if (overlay) overlay.style.display = "none";
+        // if (overlay) overlay.style.display = "none";
+        if (overlay) toggleOverlay(false);
       }
     }
   });
@@ -227,5 +290,14 @@ modal.addEventListener("click", (e) => {
 function toggleOverlay(show) {
   const overlay = document.getElementById("search-overlay");
   if (!overlay) return;
-  overlay.style.display = show ? "block" : "none";
+  overlay.classList.toggle("is-visible", show);
+}
+// ✅ TP-05: オーバーレイクリックで検索候補を閉じる
+const overlay = document.getElementById("search-overlay");
+if (overlay) {
+  overlay.addEventListener("click", () => {
+    const resultsBox = document.getElementById("js-search-results");
+    resultsBox.innerHTML = "";
+    toggleOverlay(false); 
+  });
 }

@@ -46,3 +46,7 @@
     }
   }
 }
+.breadcrumb__list a[aria-current='page'] {
+  color: $cTextBlue;
+  font-weight: bold;
+}

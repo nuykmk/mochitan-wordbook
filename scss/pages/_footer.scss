@@ -127,13 +127,13 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      max-width: 1200px;
+      // max-width: 1200px;
       margin: 0 auto;
-      gap: 2rem;
       padding: 32px 3.33% 48px;
       @include mq(md) {
         flex-direction: column;
         padding-bottom: 32px;
+        gap: 2rem;
       }
     }
 
@@ -156,7 +156,10 @@
         font-size: 2.6rem;
         font-weight: 800;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
+        @include mq(md) {
+          justify-content: center;
+        }
         @include mq(ssm) {
           font-size: 2.4rem;
         }
@@ -170,9 +173,10 @@
     .footer__links {
       display: flex;
       align-items: flex-start;
-      gap: 1rem;
+      gap: 2rem;
       @include mq(xl) {
         flex-direction: column;
+        padding-top: 10px;
       }
 
       .footer__links-list-wrapper {
@@ -187,6 +191,7 @@
         }
         @include mq(ssm) {
           flex-direction: column;
+          padding-left: 10px;
         }
         .footer__link-list {
           padding-right: 55px;

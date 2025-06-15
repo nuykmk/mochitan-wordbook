@@ -1,7 +1,7 @@
 @use '../globals' as *;
 
 .search-bar {
-  padding: 2rem 2rem 0 2rem;
+  padding: 2rem;
   position: fixed;
   left: 0;
   right: 0;
@@ -59,7 +59,8 @@
     border: 1px solid #ced0d6;
     border-radius: 4px;
     width: 100%;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
+    font-size: clamp(16px, 1.6rem, 2vw);
     font-weight: 500;
     color: $cTextBlue;
     &:focus {

@@ -23,10 +23,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const dictionaryPath = 'data/dictionary_new/';
 
   const posMap = {
-    noun: "名", verb: "動", adjective: "形", adverb: "副",
-    preposition: "前", conjunction: "接", interjection: "感",
-    pronoun: "代", auxiliary: "助", article: "冠",
-    phrase: "句", idiom: "熟"
+    verb: "動",
+    noun: "名",
+    adjective: "形",
+    adverb: "副",
+    preposition: "前",
+    conjunction: "接",
+    interjection: "間投",       
+    pronoun: "代",
+    auxiliary: "助",            
+    auxiliary_verb: "助動",     
+    article: "冠",
+    phrase: "句",
+    idiom: "熟",
+    number: "数",               
+    ordinal_number: "序数"      
   };
   const posOrder = { verb: 1, noun: 2, adjective: 3 };
 
@@ -148,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.setAttribute("aria-hidden", "false");
       modal.classList.add("is-open");
       // ✅ 検索モードのオーバーレイがあれば削除
-      document.getElementById("search-overlay")?.remove();
+      // document.getElementById("search-overlay")?.remove();
 
     } catch (err) {
       console.error("❌ JSON 読み込み失敗:", err);

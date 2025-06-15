@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const courseParam = params.get("course"); 
   if (!courseParam) return;
 
+
   Papa.parse("data/book_list.csv", {
     download: true,
     header: true,
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const breadcrumbList = document.querySelector(".breadcrumb__list");
       if (breadcrumbList && courseRow?.Tier1) {
       breadcrumbList.innerHTML = `
-        <a href="index.html" class="breadcrumb__item"><>単語帳 一覧<</a>
+        <a href="index.html" class="breadcrumb__item">単語帳 一覧</a>
         <a href="course.html?course=${encodeURIComponent(courseParam)}" aria-current="page">${courseRow.Tier1}</a>        `;
       }
 

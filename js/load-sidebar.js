@@ -35,15 +35,30 @@ document.addEventListener("DOMContentLoaded", () => {
       allLi.innerHTML = `<a href="index.html"><span class="sidebar__name">全カテゴリ</span><span class="sidebar__count">(${total})</span></a>`;
       sidebar.appendChild(allLi);
 
-      for (const [course, { count, path }] of courseMap.entries()) {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <a href="course.html?course=${encodeURIComponent(course)}">
-      <span class="sidebar__name">${course}</span><span class="sidebar__count">(${count})</span>
-    </a>
-        `;
-        sidebar.appendChild(li);
-      }
+
+
+    for (const [course, { count, path }] of courseMap.entries()) {
+      const li = document.createElement("li");
+      // ✅ 「全カテゴリー」リンクにだけ対応（course パラメータが存在しないとき）
+    if (!window.location.search.includes("course=")) {
+        const allCategoryLink = document.querySelector('#sidebar a[href="index.html"]');
+    if (allCategoryLink) {
+      allCategoryLink.classList.add("is-active");
+    }
+}
+    
+      const currentParam = new URLSearchParams(window.location.search).get("course");
+      const isActive = course === currentParam;
+    
+      li.innerHTML = `
+        <a href="course.html?course=${encodeURIComponent(course)}" class="${isActive ? "is-active" : ""}">
+          <span class="sidebar__name">${course}</span>
+          <span class="sidebar__count">(${count})</span>
+        </a>
+      `;
+      sidebar.appendChild(li);
+    }
+
     },
     error: err => {
       console.error("❌ サイドバーCSV読み込みエラー:", err);
