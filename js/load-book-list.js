@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const id = book.ID?.trim();
 
         if (!course || !title) return;
-// 
+
         if (!grouped[course]) grouped[course] = [];
         grouped[course].push({ ...book, ID: id, Tier3: title });
       });

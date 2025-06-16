@@ -9,7 +9,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   // ソートドロップダウン開閉
   // ✅ .sort-dropdown が存在しない場合はスキップ（例：トップページなど）
-  // この警告はページによっては仕様上出るものです（エラーではありません）
   const sortDropdown = document.querySelector(".sort-dropdown");
   if (!sortDropdown) {
     console.info("⚠️ .sort-dropdown が見つかりません。word-list-controls.js の処理をスキップします。");
@@ -133,34 +132,40 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ✅ 印刷ボタン → ?print=true で別タブを開く
-
-
   document.querySelector('.print-button__btn')?.addEventListener('click', () => {
     let retries = 0;
   
-    const tryPrint = () => {
-      if (!window.allWords || window.allWords.length === 0) {
+    const tryPrint = async () => {
+      // ✅ データ読み込みチェック（book_id 対応の単語配列）
+      if (!window.wordDataArray || window.wordDataArray.length === 0) {
         if (retries++ < 20) {
-          setTimeout(tryPrint, 300); 
+          setTimeout(tryPrint, 300);
         } else {
           alert("データがまだ読み込まれていません。少し待ってから再度お試しください。");
         }
         return;
       }
   
+      // ✅ 印刷用モードON
       document.body.setAttribute('data-print-mode', 'true');
-      window.renderWordList(window.allWords);
-      window.applyDisplayMode?.(); 
   
+      // ✅ 全単語を描画してフィルター反映
+      renderWordList(window.wordDataArray);
+      applyDisplayMode(currentMode);
+  
+      // ✅ 印刷実行
       window.print();
+  
+      // ✅ 印刷終了後に元に戻す
       window.onafterprint = () => {
-        window.goToPage(window.currentPage);
+        goToPage(window.currentPage, { skipReload: true });
         document.body.removeAttribute('data-print-mode');
       };
     };
   
     tryPrint();
   });
+
 
   // ✅ 初期状態で「全表示」を適用（またはURLパラメータに応じて切り替え）
   toggleView('all');

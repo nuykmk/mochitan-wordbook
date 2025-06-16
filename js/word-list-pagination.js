@@ -7,7 +7,36 @@
 
 // CSVとJSONを統合したデータをここに保持
 let mergedWordData = [];
-document.addEventListener("DOMContentLoaded", loadAndRenderWordList);
+let currentMode = "all";
+
+// ✅ applyDisplayMode関数は loadAndRenderWordList の外に置いておくこと！
+function applyDisplayMode(mode) {
+  const ja = document.querySelectorAll(".js-hide-ja");
+  const en = document.querySelectorAll(".js-hide-en");
+  if (mode === "ja") {
+    ja.forEach(el => el.classList.add("is-hidden-ja"));
+    en.forEach(el => el.classList.remove("is-hidden-en"));
+  } else if (mode === "en") {
+    en.forEach(el => el.classList.add("is-hidden-en"));
+    ja.forEach(el => el.classList.remove("is-hidden-ja"));
+  } else {
+    ja.forEach(el => el.classList.remove("is-hidden-ja"));
+    en.forEach(el => el.classList.remove("is-hidden-en"));
+  }
+}
+
+// ✅ DOMContentLoaded後に呼び出し（非同期で初期描画 → 表示フィルタ適用 → リサイズ対応）
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadAndRenderWordList();            // 完了を待ってから表示
+  applyDisplayMode(currentMode);            // 現在の表示モードを反映
+
+  // ✅ スマホ等での画面幅変更時にも再反映
+  window.addEventListener("resize", () => {
+    applyDisplayMode(currentMode);
+  });
+});
+
+
 
 
 // ✅ URLパラメータ取得関数
@@ -311,7 +340,6 @@ await goToPage(currentPage);
   // 指定ページに切り替え
   async function goToPage(page, options = {}) {
     currentPage = page;
-    // console.log("✅ goToPage呼び出し", page);
   
     const start = (page - 1) * perPage;
     const pageWords = window.wordDataArray.slice(start, start + perPage);
@@ -320,6 +348,7 @@ await goToPage(currentPage);
       renderWordList(pageWords);
       const totalCount = window.wordDataArray?.length || allWords.length || 0;
       renderPagination(currentPage, Math.ceil(totalCount / perPage));
+      applyDisplayMode(currentMode); 
       return;
     }
   
@@ -339,12 +368,7 @@ await goToPage(currentPage);
   
     renderWordList(wordDataWithJson);
     renderPagination(currentPage, Math.ceil(window.wordDataArray.length / perPage));
-    // console.log("🧭 ページネーションデバッグ", {
-    //   currentPage,
-    //   totalPages: Math.ceil(window.wordDataArray.length / perPage),
-    //   wordDataArrayLength: window.wordDataArray.length,
-    //   allWordsLength: allWords.length,
-    // });
+    applyDisplayMode(currentMode);
   }
     
 
@@ -468,6 +492,10 @@ await goToPage(currentPage);
       wordListContainer.appendChild(card);
     });
   }
+
+  window.renderWordList = renderWordList;
+window.goToPage = goToPage;
+window.applyDisplayMode = applyDisplayMode;
   // ✅ ページネーション表示
   function renderPagination(current, total) {
     const isSP = window.innerWidth <= 742;
@@ -527,7 +555,6 @@ await goToPage(currentPage);
         a.href = "#";
         a.className = "pagination__link";
         if (i === current) a.classList.add("is-current");
-        // a.textContent = `[${(i - 1) * perPage + 1}-${Math.min(i * perPage, allWords.length)}]`;
         a.textContent = `[${(i - 1) * perPage + 1}-${Math.min(i * perPage, window.wordDataArray.length)}]`;
   
         a.addEventListener("click", e => {
@@ -595,28 +622,21 @@ await goToPage(currentPage);
   });
 
    // ✅ 表示切り替え（全表示・日本語・英語のみ）
+   // ✅ フィルタボタンの初期設定（クリック時に currentMode を更新）
   toggleButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       toggleButtons.forEach(b => b.classList.remove("is-active"));
       btn.classList.add("is-active");
-      applyDisplayMode(btn.dataset.mode);
+      currentMode = btn.dataset.mode; // ← 現在モードを記録
+      applyDisplayMode(currentMode);
     });
   });
 
-  function applyDisplayMode(mode) {
-    const ja = document.querySelectorAll(".js-hide-ja");
-    const en = document.querySelectorAll(".js-hide-en");
-    if (mode === "ja") {
-      ja.forEach(el => el.classList.add("is-hidden-ja"));
-      en.forEach(el => el.classList.remove("is-hidden-en"));
-    } else if (mode === "en") {
-      en.forEach(el => el.classList.add("is-hidden-en"));
-      ja.forEach(el => el.classList.remove("is-hidden-ja"));
-    } else {
-      ja.forEach(el => el.classList.remove("is-hidden-ja"));
-      en.forEach(el => el.classList.remove("is-hidden-en"));
-    }
-  }
+  // ✅ リサイズ時にも currentMode を再適用
+  window.addEventListener("resize", () => {
+    applyDisplayMode(currentMode);
+  });
+  
 
   // ✅ モーダル表示トリガー
   document.addEventListener("click", e => {

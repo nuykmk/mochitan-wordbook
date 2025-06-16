@@ -143,7 +143,7 @@
     }
     .word-highlight {
       display: inline;
-      border-bottom: 1px solid $cTextBlue; // 色や太さはお好みで
+      border-bottom: 1px solid $cTextBlue;
     }
   }
 
@@ -289,7 +289,6 @@
     }
     .word-card__image {
       width: 100%;
-      // max-width: 150px;
       height: auto;
       object-fit: contain;
     }

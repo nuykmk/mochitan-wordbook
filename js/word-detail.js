@@ -71,8 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
         part_of_speech: m.part_of_speech
       }));
       const combined = [...mainMeaning, ...extra];
-      // const combined = sortMeanings(mainMeaning.concat(extra));
-      // ✅ TP-19: メイン訳の品詞を最上位に、残りは品詞優先順位に従って並べる
+      // ✅ メイン訳の品詞を最上位に、残りは品詞優先順位に従って並べる
       // ✅ 品詞順の優先度
       const posOrder = { "動": 1, "名": 2, "形": 3 };
       const mainPOS = word.part_of_speech || "";
@@ -96,31 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
       meaningsEl.innerHTML = sortedGrouped
         .map(([pos, list]) => `<li><span class="word-card__part-of-speech">${pos}</span> ${list.join("、")}</li>`)
         .join("");
-// const combined = [...mainMeaning, ...extra];
-// const grouped = {};
-// combined.forEach(m => {
-//   const pos = m.part_of_speech || "";
-//   if (!grouped[pos]) grouped[pos] = [];
-//   grouped[pos].push(m.translation);
-// });
-
-// // ✅ 並び順を「メイン品詞→動→名→形」の順で
-// const posOrder = { verb: 1, noun: 2, adjective: 3 };
-// const mainPOS = word.part_of_speech || "";
-// const sortedGrouped = Object.entries(grouped).sort(([a], [b]) => {
-//   if (a === mainPOS) return -1;
-//   if (b === mainPOS) return 1;
-//   return (posOrder[a] || 999) - (posOrder[b] || 999);
-// });
-//       // const grouped = {};
-//       combined.forEach(m => {
-//         const pos = posMap[m.part_of_speech] || m.part_of_speech || "";
-//         if (!grouped[pos]) grouped[pos] = [];
-//         grouped[pos].push(m.translation);
-//       });
-//       meaningsEl.innerHTML = Object.entries(grouped)
-//         .map(([pos, list]) => `<li><span class="word-card__part-of-speech">${pos}</span> ${list.join("、")}</li>`)
-//         .join("");
 
       // 画像
       imageEl.src = `Img/${word.course}/${word.english}.jpg`;
@@ -141,17 +115,37 @@ document.addEventListener("DOMContentLoaded", () => {
         </button>`;
       exampleJaEl.textContent = word.example_translation || "";
 
-      // 対義語
+
+      // 関連語（派生語・対義語を統合して表示）
       relatedEl.innerHTML = "";
+      let hasRelated = false;
+
+      // ✅ 派生語（◇）
+      if ((json.derivatives || []).length > 0) {
+        hasRelated = true;
+        json.derivatives.forEach(d => {
+          const jpPos = posMap[d.part_of_speech] || d.part_of_speech;
+          relatedEl.innerHTML += `<p class="word-modal__related-item">(${jpPos}) ${d.english}：${d.translation}</p>`;
+        });
+      }
+
+      // ✅ 対義語（↔︎）
       if ((json.antonyms || []).length > 0) {
-        relatedEl.closest(".word-modal__section").style.display = "block";
+        hasRelated = true;
         json.antonyms.forEach(a => {
           const jpPos = posMap[a.part_of_speech] || a.part_of_speech;
           relatedEl.innerHTML += `<p class="word-modal__related-item">↔︎(${jpPos}) ${a.english}：${a.translation}</p>`;
         });
+      }
+
+      // ✅ セクションの表示制御
+      if (hasRelated) {
+        relatedEl.closest(".word-modal__section").style.display = "block";
       } else {
         relatedEl.closest(".word-modal__section").style.display = "none";
       }
+
+
 
       // 使い方（phrases）- ✅ p.englishの存在チェック付き
       usageEl.innerHTML = "";
@@ -200,29 +194,17 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.setAttribute("aria-hidden", "false");
       modal.classList.add("is-open");
       // ✅ 検索モードのオーバーレイがあれば削除
-      // document.getElementById("search-overlay")?.remove();
 
     } catch (err) {
       console.error("❌ JSON 読み込み失敗:", err);
     }
   };
 
-  // 前後切り替え
-  // function moveModal(direction) {
-  //   const cards = [...document.querySelectorAll(".word-card")];
-  //   const ids = cards.map(c => c.dataset.id);
-  //   const currentId = modal.dataset.currentId;
-  //   const currentIndex = ids.indexOf(currentId);
-  //   const targetId = direction === "next" ? ids[currentIndex + 1] : ids[currentIndex - 1];
-  //   if (!targetId) return;
-  //   const targetWord = window.wordDataArray.find(w => w.id === targetId);
-  //   if (targetWord) window.openWordModal(targetWord);
-  // }
   // ✅ 前後切り替え（グレーアウト演出付き）
 function moveModal(direction) {
   const fadeLayer = document.querySelector(".word-modal__fade-layer");
   if (fadeLayer) {
-    fadeLayer.classList.add("is-active"); // ← グレーアウト開始
+    fadeLayer.classList.add("is-active"); 
   }
 
   const cards = [...document.querySelectorAll(".word-card")];

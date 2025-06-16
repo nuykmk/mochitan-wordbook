@@ -14,7 +14,6 @@
 
   &__overlay {
     display: flex;
-    // flex-direction: column;
     justify-content: center;
     align-items: center;
     position: fixed;
@@ -33,11 +32,9 @@
     border-radius: 12px;
     animation: fadeIn 0.3s ease;
     padding-bottom: 18px;
-    // margin: 0 auto 4rem;
-    // margin-top: 100px;
-    // overflow-y: auto;
+
     display: flex;
-    flex-direction: column; // ← 追加
+    flex-direction: column;
     @include mq(sm) {
       padding-bottom: 0;
       width: 90%;
