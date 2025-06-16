@@ -156,100 +156,97 @@
   <div class="word-modal" id="wordModal" aria-hidden="true">
     <div class="word-modal__overlay" id="js-word-modal-overlay">
       <div class="word-modal__content" role="dialog" aria-modal="true" aria-labelledby="wordModalTitle">
+        <div class="word-modal__fade-layer" aria-hidden="true"></div>
+        <div class="word-modal__scroll-area">
+          <div class="word-modal__inner">
+            <!-- ヘッダー：単語・発音・画像 -->
+            <div class="word-modal__header">
+              <div class="word-modal__title-wrapper">
+                <h2 class="word-modal__title" id="wordModalTitle">
+                  <span class="word-modal__title-text"></span>
+                  <button class="word-modal__sound" data-audio="wordsound/present_1.mp3" aria-label="発音再生">
+                    <img src="image/btn_sound.png" alt="発音を再生">
+                  </button>
+                </h2>
+                <p class="word-modal__pronunciation"><span class="word-modal__pronunciation-text">
+                  </span></p>
+                <section class="meanings__section">
+                  <h3 class="word-modal__section-title">意味</h3>
+                  <ul class="word-modal__meanings">
+                    <li><span class="highlight"></span></li>
+                    <li></li>
+                    <li></li>
+                  </ul>
+                </section>
+              </div>
+              <div class="word-modal__image-wrapper">
+                <img src="Img/junior/present.jpg" alt="presentのイラスト" class="word-modal__image">
+              </div>
+            </div>
 
-        <button class="word-modal__close" id="js-word-modal-close" aria-label="閉じる">
-          <img src="image/modal-close.png" alt="閉じるアイコン" class="word-modal__close-img">
-        </button>
-        <div class="word-modal__inner">
+            <!-- 本文エリア -->
+            <div class="word-modal__body">
+              <section class="word-modal__section">
+                <h3 class="word-modal__section-title">例文</h3>
+                <div class="word-modal__example">
+                  <p class="word-modal__example-en">
+                    <span class="highlight"></span>
+                    <button class="word-modal__example-sound word-modal__sound" data-audio="wordsound/present_1.mp3"
+                      aria-label="例文の音声再生">
+                      <img src="image/btn_sound.png" alt="発音再生">
+                    </button>
+                  </p>
+                  <p class="word-modal__example-ja"></p>
+                </div>
+              </section>
 
-          <!-- ヘッダー：単語・発音・画像 -->
-          <div class="word-modal__header">
-            <div class="word-modal__title-wrapper">
-              <h2 class="word-modal__title" id="wordModalTitle">
-                <span class="word-modal__title-text"></span>
-                <button class="word-modal__sound" data-audio="wordsound/present_1.mp3" aria-label="発音再生">
-                  <img src="image/btn_sound.png" alt="発音を再生">
-                </button>
-              </h2>
-              <p class="word-modal__pronunciation"><span class="word-modal__pronunciation-text">
-                </span></p>
-              <section class="meanings__section">
-                <h3 class="word-modal__section-title">意味</h3>
-                <ul class="word-modal__meanings">
-                  <li><span class="highlight"></span></li>
-                  <li></li>
-                  <li></li>
+              <section class="word-modal__section">
+                <h3 class="word-modal__section-title">関連語</h3>
+                <div class="word-modal__related">
+                  <p class="word-modal__related-item"></p>
+                  <p class="word-modal__related-item"></p>
+                </div>
+              </section>
+
+              <section class="word-modal__section">
+                <h3 class="word-modal__section-title">使い方</h3>
+                <ul class="word-modal__usage">
+                  <li>
+                    <p class="word-modal__usage-en"><span class="highlight"></span></p>
+                    <p class="word-modal__usage-ja"></p>
+                  </li>
+                  <li>
+                    <p class="word-modal__usage-en"><span class="highlight"></span>
+                    </p>
+                    <p class="word-modal__usage-ja"></p>
+                  </li>
+                  <li>
+                    <p class="word-modal__usage-en"><span class="highlight"></span>
+                    </p>
+                    <p class="word-modal__usage-ja"></p>
+                  </li>
                 </ul>
               </section>
-            </div>
-            <div class="word-modal__image-wrapper">
-              <img src="Img/junior/present.jpg" alt="presentのイラスト" class="word-modal__image">
-            </div>
-          </div>
 
-          <!-- 本文エリア -->
-          <div class="word-modal__body">
-            <section class="word-modal__section">
-              <h3 class="word-modal__section-title">例文</h3>
-              <div class="word-modal__example">
-                <p class="word-modal__example-en">
-                  <span class="highlight"></span>
-                  <button class="word-modal__example-sound word-modal__sound" data-audio="wordsound/present_1.mp3"
-                    aria-label="例文の音声再生">
-                    <img src="image/btn_sound.png" alt="発音再生">
-                  </button>
+              <section class="word-modal__section">
+                <h3 class="word-modal__section-title">ニュアンス</h3>
+                <p class="word-modal__nuance">
                 </p>
-                <p class="word-modal__example-ja"></p>
-              </div>
-            </section>
+              </section>
 
-            <section class="word-modal__section">
-              <h3 class="word-modal__section-title">関連語</h3>
-              <div class="word-modal__related">
-                <p class="word-modal__related-item"></p>
-                <p class="word-modal__related-item"></p>
-              </div>
-            </section>
+              <section class="word-modal__section">
+                <h3 class="word-modal__section-title">英英</h3>
+                <p class="word-modal__english-def">
+                </p>
+              </section>
 
-            <section class="word-modal__section">
-              <h3 class="word-modal__section-title">使い方</h3>
-              <ul class="word-modal__usage">
-                <li>
-                  <p class="word-modal__usage-en"><span class="highlight"></span></p>
-                  <p class="word-modal__usage-ja"></p>
-                </li>
-                <li>
-                  <p class="word-modal__usage-en"><span class="highlight"></span>
-                  </p>
-                  <p class="word-modal__usage-ja"></p>
-                </li>
-                <li>
-                  <p class="word-modal__usage-en"><span class="highlight"></span>
-                  </p>
-                  <p class="word-modal__usage-ja"></p>
-                </li>
-              </ul>
-            </section>
-
-            <section class="word-modal__section">
-              <h3 class="word-modal__section-title">ニュアンス</h3>
-              <p class="word-modal__nuance">
-              </p>
-            </section>
-
-            <section class="word-modal__section">
-              <h3 class="word-modal__section-title">英英</h3>
-              <p class="word-modal__english-def">
-              </p>
-            </section>
-
-            <button class="word-modal__report">
-              <img src="image/quiz_blue.png" alt="報告アイコン">
-              単語を報告
-            </button>
+              <button class="word-modal__report">
+                <img src="image/quiz_blue.png" alt="報告アイコン">
+                単語を報告
+              </button>
+            </div>
           </div>
         </div>
-
 
         <!-- フッター -->
         <div class="word-modal__footer">
@@ -258,11 +255,11 @@
             <button class="word-modal__nav-btn word-modal__nav-btn-right"> &gt;</button>
           </div>
         </div>
+        <!-- モーダル外・中央に表示される閉じるボタン -->
+        <div class="word-modal__close-outer">
+          <button class="word-modal__close-btn">閉じる</button>
+        </div>
 
-      </div>
-      <!-- モーダル外・中央に表示される閉じるボタン -->
-      <div class="word-modal__close-outer">
-        <button class="word-modal__close-btn">閉じる</button>
       </div>
     </div>
   </div>
@@ -370,5 +367,3 @@
 </body>
 
 </html>
-
-<!-- 6/15完了分 -->

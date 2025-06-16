@@ -5,7 +5,8 @@
 // - 100件単位でページ分割して表示
 // - Swiperやフィルタ、表示切替、音声再生も統合対応
 
-
+// CSVとJSONを統合したデータをここに保持
+let mergedWordData = [];
 document.addEventListener("DOMContentLoaded", loadAndRenderWordList);
 
 
@@ -146,36 +147,54 @@ async function loadAndRenderWordList() {
     });
   });
 
+
   // ✅ 全単語一覧CSVを読み込み
   Papa.parse("data/english_word_courses.csv", {
     download: true,
     header: true,
     complete: async function (results) {
-    const filtered = results.data.filter(w => bookWordIds.includes(w.id));
-    allWords = (courseParam
-      ? filtered.filter(w => w.course === courseParam)
-      : filtered
-    )
-    .map(w => ({
-      id: w.id,
-      english: w.english,
-      translation: w.translation,
-      part_of_speech: w.part_of_speech,
-      course: w.course || "",
-      importance: Number(w.importance) || 9999,
-      example: w.example || "",
-      example_translation: w.example_translation || "",
-      sound: w.sound || ""
-    }));
+      const filtered = results.data.filter(w => bookWordIds.includes(w.id));
+      const baseWords = (courseParam
+        ? filtered.filter(w => w.course === courseParam)
+        : filtered
+      ).map(w => ({
+        id: w.id,
+        english: w.english,
+        translation: w.translation,
+        part_of_speech: w.part_of_speech,
+        course: w.course || "",
+        importance: Number(w.importance) || 9999,
+        example: w.example || "",
+        example_translation: w.example_translation || "",
+        sound: w.sound || ""
+      })).sort((a, b) => a.importance - b.importance);
 
-      window.wordDataArray = allWords;
+        // ✅ Swiper表示に必要
+        generateRecommendSwiperBooks(bookId);
 
+      // ✅ JSON統合
+      const mergedWordList = await Promise.all(
+        baseWords.map(async word => {
+          const path = `data/dictionary_new/${word.id}.json`;
+          try {
+            const res = await fetch(path);
+            if (!res.ok) throw new Error("404");
+            const json = await res.json();
+            return { ...word, json };
+          } catch {
+            return { ...word, json: {} };
+          }
+        })
+      );
+  
+      // ✅ 表示用にセット（goToPageが使う）
+      window.wordDataArray = mergedWordList;
+  
+      // ✅ Heroカウント更新
       document.querySelector('.hero__count').innerHTML =
-        `<img src="image/words_count_icon.png" class="hero__count-icon">${allWords.length}単語`;
-
-      // ✅ Swiper表示用にrecommendSwiperBooksを生成
-      generateRecommendSwiperBooks(bookId);
-
+        `<img src="image/words_count_icon.png" class="hero__count-icon">${mergedWordList.length}単語`;
+  
+      // ✅ 表示開始
       await goToPage(currentPage);
     }
   });
@@ -247,34 +266,52 @@ async function loadAndRenderWordList() {
     download: true,
     header: true,
     complete: async function (results) {
+
       const filtered = results.data.filter(w => bookWordIds.includes(w.id));
-      allWords = (courseParam
-        ? filtered.filter(w => w.course === courseParam)
-        : filtered
+      const baseWords = (courseParam
+      ? filtered.filter(w => w.course === courseParam)
+      : filtered
       ).map(w => ({
-        id: w.id,
-        english: w.english,
-        translation: w.translation,
-        part_of_speech: w.part_of_speech,
-        course: w.course || "",
-        importance: Number(w.importance) || 9999,
-        example: w.example || "",
-        example_translation: w.example_translation || "",
-        sound: w.sound || ""
+      id: w.id,
+      english: w.english,
+      translation: w.translation,
+      part_of_speech: w.part_of_speech,
+      course: w.course || "",
+      importance: Number(w.importance) || 9999,
+      example: w.example || "",
+      example_translation: w.example_translation || "",
+      sound: w.sound || ""
       }));
-      window.wordDataArray = allWords;
 
-      document.querySelector('.hero__count').innerHTML =
-        `<img src="image/words_count_icon.png" class="hero__count-icon">${allWords.length}単語`;
+      const mergedWordList = await Promise.all(
+      baseWords.map(async word => {
+      const path = `data/dictionary_new/${word.id}.json`;
+      try {
+        const res = await fetch(path);
+        if (!res.ok) throw new Error("404");
+        const json = await res.json();
+        return { ...word, json };
+      } catch {
+        return { ...word, json: {} };
+      }
+      })
+      );
 
-      await goToPage(currentPage);
+// ✅ ソート
+mergedWordList.sort((a, b) => a.importance - b.importance);
+window.wordDataArray = mergedWordList;
+
+document.querySelector('.hero__count').innerHTML =
+  `<img src="image/words_count_icon.png" class="hero__count-icon">${mergedWordList.length}単語`;
+
+await goToPage(currentPage);
     }
   });
 
   // 指定ページに切り替え
   async function goToPage(page, options = {}) {
     currentPage = page;
-    console.log("✅ goToPage呼び出し", page);
+    // console.log("✅ goToPage呼び出し", page);
   
     const start = (page - 1) * perPage;
     const pageWords = window.wordDataArray.slice(start, start + perPage);
@@ -301,48 +338,15 @@ async function loadAndRenderWordList() {
     );
   
     renderWordList(wordDataWithJson);
-    renderPagination(currentPage, Math.ceil(allWords.length / perPage));
+    renderPagination(currentPage, Math.ceil(window.wordDataArray.length / perPage));
+    // console.log("🧭 ページネーションデバッグ", {
+    //   currentPage,
+    //   totalPages: Math.ceil(window.wordDataArray.length / perPage),
+    //   wordDataArrayLength: window.wordDataArray.length,
+    //   allWordsLength: allWords.length,
+    // });
   }
-//   async function goToPage(page, options = {}) {
-//     console.log("✅ goToPage呼び出し", page);
     
-// console.log("📦 window.wordDataArray:", window.wordDataArray);
-// console.log("🔢 slice結果:", window.wordDataArray?.slice?.((page - 1) * perPage, page * perPage));
-//     currentPage = page;
-  
-//     const start = (page - 1) * perPage;
-//     const pageWords = window.wordDataArray.slice(start, start + perPage);
-
-   
-  
-//     // ✅ skipReload: true の場合は JSON を取得せずに描画する
-//     if (options.skipReload) {
-//       renderWordList(pageWords); 
-//       // renderPagination(currentPage, Math.ceil(window.wordDataArray.length / perPage));
-//       const totalCount = window.wordDataArray?.length || allWords.length || 0;
-// renderPagination(currentPage, Math.ceil(totalCount / perPage));
-//       return;
-//     }
-  
-//     // ✅ それ以外は従来通り JSON を取得して描画
-//     const wordDataWithJson = await Promise.all(
-//       pageWords.map(async word => {
-//         const path = `${dictionaryPath}${word.id}.json`;
-//         try {
-//           const res = await fetch(path);
-//           if (!res.ok) throw new Error("404");
-//           const json = await res.json();
-//           return { ...word, json };
-//         } catch {
-//           return { ...word, json: {} };
-//         }
-//       })
-//     );
-  
-    
-//     renderWordList(wordDataWithJson);
-//     renderPagination(currentPage, Math.ceil(allWords.length / perPage));
-//   }
 
   // 単語リストをHTMLに出力
   function renderWordList(data) {
@@ -351,9 +355,22 @@ async function loadAndRenderWordList() {
     data.forEach((word, index) => {
       // 発音：[xxx]の形式に整形
       let pronunciation = "";
+
       if (word.json?.pronunciation) {
-        const match = word.json.pronunciation.match(/(?:\[.*?\])?\s*([^\s;\|]+)/);
-        if (match) pronunciation = `[${match[1]}]`;
+        const mainPOS = word.part_of_speech || "";
+        const posInJapanese = partOfSpeechMap[mainPOS] || "";
+      
+        // (名) などの括弧付き品詞 or [US] などのマークはすべて除去してから抽出
+        const cleaned = word.json.pronunciation
+          .replace(/\[.*?\]/g, "")         // [US] や [UK] を削除
+          .replace(/\([^)]*\)/g, "")       // (名) (形) (強) (弱)などを削除
+          .replace(/\|/g, "")              // | を削除
+          .trim();
+      
+        const match = cleaned.match(/[^\s;|]+/); // 最初に出現する発音記号だけ
+        if (match) {
+          pronunciation = `[${match[0]}]`;
+        }
       }
 
       const meaningsByPOS = {};
@@ -510,7 +527,8 @@ async function loadAndRenderWordList() {
         a.href = "#";
         a.className = "pagination__link";
         if (i === current) a.classList.add("is-current");
-        a.textContent = `[${(i - 1) * perPage + 1}-${Math.min(i * perPage, allWords.length)}]`;
+        // a.textContent = `[${(i - 1) * perPage + 1}-${Math.min(i * perPage, allWords.length)}]`;
+        a.textContent = `[${(i - 1) * perPage + 1}-${Math.min(i * perPage, window.wordDataArray.length)}]`;
   
         a.addEventListener("click", e => {
           e.preventDefault();
@@ -550,16 +568,21 @@ async function loadAndRenderWordList() {
     currentPage = 1;
     totalPages = 1;
     window.addEventListener("resize", () => {
-    // ページ数を再計算（1ページあたりの表示数が変わる可能性あるため）
-    totalPages = Math.ceil(allWords.length / perPage);  
-    // ページネーション再描画
-    renderPagination(currentPage, totalPages);  
-    // 表示するデータだけ切り出して描画
+      // ✅ データソースを window.wordDataArray 優先で取得
+    const sourceArray = window.wordDataArray || allWords;
+
+    // ✅ ページ数を再計算
+    totalPages = Math.ceil(sourceArray.length / perPage);
+
+    // ✅ ページネーション再描画
+    renderPagination(currentPage, totalPages);
+
+    // ✅ 表示するデータだけ切り出して描画
     const start = (currentPage - 1) * perPage;
     const end = currentPage * perPage;
-    const currentData = allWords.slice(start, end);  
+    const currentData = sourceArray.slice(start, end);
     renderWordList(currentData);
-  });
+    });
 
  // ✅ 音声再生ボタン
   document.addEventListener("click", e => {

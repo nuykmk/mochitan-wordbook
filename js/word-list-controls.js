@@ -4,6 +4,8 @@
 // - 100件単位でページ分割して表示
 // - Swiperやフィルタ、表示切替、音声再生も統合対応
 
+
+
 document.addEventListener('DOMContentLoaded', () => {
   // ソートドロップダウン開閉
   // ✅ .sort-dropdown が存在しない場合はスキップ（例：トップページなど）

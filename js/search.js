@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollBuffer += scrollDelta;
     
     const suggestionOpen = document.querySelector("#js-search-results")?.children.length > 0;
-    console.log("📏 scrollDelta:", scrollDelta, "scrollBuffer:", scrollBuffer);
+    // console.log("📏 scrollDelta:", scrollDelta, "scrollBuffer:", scrollBuffer);
 
     // ✅ TP-04: 検索候補が出ていたら常に表示
     if (suggestionOpen) {

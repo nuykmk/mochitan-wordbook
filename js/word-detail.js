@@ -70,16 +70,57 @@ document.addEventListener("DOMContentLoaded", () => {
         translation: m.translation,
         part_of_speech: m.part_of_speech
       }));
-      const combined = sortMeanings(mainMeaning.concat(extra));
+      const combined = [...mainMeaning, ...extra];
+      // const combined = sortMeanings(mainMeaning.concat(extra));
+      // ✅ TP-19: メイン訳の品詞を最上位に、残りは品詞優先順位に従って並べる
+      // ✅ 品詞順の優先度
+      const posOrder = { "動": 1, "名": 2, "形": 3 };
+      const mainPOS = word.part_of_speech || "";
+
+      // ✅ combinedをgroupedにまとめる
       const grouped = {};
       combined.forEach(m => {
         const pos = posMap[m.part_of_speech] || m.part_of_speech || "";
         if (!grouped[pos]) grouped[pos] = [];
         grouped[pos].push(m.translation);
+        });
+
+      // ✅ 優先順＋メイン品詞で並び替え
+      const sortedGrouped = Object.entries(grouped).sort(([a], [b]) => {
+        if (a === mainPOS) return -1;
+        if (b === mainPOS) return 1;
+        return (posOrder[a] || 999) - (posOrder[b] || 999);
       });
-      meaningsEl.innerHTML = Object.entries(grouped)
-        .map(([pos, list]) => `<li>(${pos}) ${list.join("、")}</li>`)
+
+      // ✅ 出力
+      meaningsEl.innerHTML = sortedGrouped
+        .map(([pos, list]) => `<li><span class="word-card__part-of-speech">${pos}</span> ${list.join("、")}</li>`)
         .join("");
+// const combined = [...mainMeaning, ...extra];
+// const grouped = {};
+// combined.forEach(m => {
+//   const pos = m.part_of_speech || "";
+//   if (!grouped[pos]) grouped[pos] = [];
+//   grouped[pos].push(m.translation);
+// });
+
+// // ✅ 並び順を「メイン品詞→動→名→形」の順で
+// const posOrder = { verb: 1, noun: 2, adjective: 3 };
+// const mainPOS = word.part_of_speech || "";
+// const sortedGrouped = Object.entries(grouped).sort(([a], [b]) => {
+//   if (a === mainPOS) return -1;
+//   if (b === mainPOS) return 1;
+//   return (posOrder[a] || 999) - (posOrder[b] || 999);
+// });
+//       // const grouped = {};
+//       combined.forEach(m => {
+//         const pos = posMap[m.part_of_speech] || m.part_of_speech || "";
+//         if (!grouped[pos]) grouped[pos] = [];
+//         grouped[pos].push(m.translation);
+//       });
+//       meaningsEl.innerHTML = Object.entries(grouped)
+//         .map(([pos, list]) => `<li><span class="word-card__part-of-speech">${pos}</span> ${list.join("、")}</li>`)
+//         .join("");
 
       // 画像
       imageEl.src = `Img/${word.course}/${word.english}.jpg`;
@@ -167,16 +208,42 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // 前後切り替え
-  function moveModal(direction) {
-    const cards = [...document.querySelectorAll(".word-card")];
-    const ids = cards.map(c => c.dataset.id);
-    const currentId = modal.dataset.currentId;
-    const currentIndex = ids.indexOf(currentId);
-    const targetId = direction === "next" ? ids[currentIndex + 1] : ids[currentIndex - 1];
-    if (!targetId) return;
-    const targetWord = window.wordDataArray.find(w => w.id === targetId);
-    if (targetWord) window.openWordModal(targetWord);
+  // function moveModal(direction) {
+  //   const cards = [...document.querySelectorAll(".word-card")];
+  //   const ids = cards.map(c => c.dataset.id);
+  //   const currentId = modal.dataset.currentId;
+  //   const currentIndex = ids.indexOf(currentId);
+  //   const targetId = direction === "next" ? ids[currentIndex + 1] : ids[currentIndex - 1];
+  //   if (!targetId) return;
+  //   const targetWord = window.wordDataArray.find(w => w.id === targetId);
+  //   if (targetWord) window.openWordModal(targetWord);
+  // }
+  // ✅ 前後切り替え（グレーアウト演出付き）
+function moveModal(direction) {
+  const fadeLayer = document.querySelector(".word-modal__fade-layer");
+  if (fadeLayer) {
+    fadeLayer.classList.add("is-active"); // ← グレーアウト開始
   }
+
+  const cards = [...document.querySelectorAll(".word-card")];
+  const ids = cards.map(c => c.dataset.id);
+  const currentId = modal.dataset.currentId;
+  const currentIndex = ids.indexOf(currentId);
+  const targetId = direction === "next" ? ids[currentIndex + 1] : ids[currentIndex - 1];
+  if (!targetId) return;
+
+  const targetWord = window.wordDataArray.find(w => w.id === targetId);
+  if (targetWord) {
+    setTimeout(() => {
+      window.openWordModal(targetWord);
+
+      // 🌟 エフェクト解除（300ms後）
+      if (fadeLayer) {
+        fadeLayer.classList.remove("is-active");
+      }
+    }, 300);
+  }
+}
 
   prevBtn.addEventListener("click", () => moveModal("prev"));
   nextBtn.addEventListener("click", () => moveModal("next"));

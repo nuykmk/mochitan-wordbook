@@ -206,21 +206,6 @@
     }
   }
 
-  .word-card__part-of-speech {
-    font-weight: 700;
-    margin-right: 0.5rem;
-    font-weight: bold;
-    background: $cBase;
-    border: $cTextBlue 1px solid;
-    font-size: 1.2rem;
-    padding: 0px 3px;
-    border-radius: 4px;
-    margin-right: 0.5rem;
-    @include mq(md) {
-      font-size: 1.1rem;
-      padding: 0px 2px;
-    }
-  }
   &__main-meaning {
     .word-card__translation {
       line-height: 2.2rem;
@@ -319,5 +304,20 @@
 .word-area {
   @include mq(md) {
     padding-left: 24px;
+  }
+}
+.word-card__part-of-speech {
+  font-weight: 700;
+  margin-right: 0.5rem;
+  font-weight: bold;
+  background: $cBase;
+  border: $cTextBlue 1px solid;
+  font-size: 1.2rem;
+  padding: 0px 3px;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  @include mq(md) {
+    font-size: 1.1rem;
+    padding: 0px 2px;
   }
 }
