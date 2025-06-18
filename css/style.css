@@ -21,11 +21,6 @@ body {
 main {
   padding-top: 58px;
 }
-@media screen and (max-width: 680px) {
-  main {
-    padding-top: 45px;
-  }
-}
 
 .inner {
   max-width: 1000px;
@@ -366,7 +361,7 @@ main {
 
 .header__inner {
   max-width: 1440px;
-  padding: 3px 1.1%;
+  padding: 15px 1%;
   margin: 0 auto;
   height: 58px;
   width: 100%;
@@ -374,9 +369,9 @@ main {
   justify-content: space-between;
   align-items: center;
 }
-@media screen and (max-width: 680px) {
+@media screen and (max-width: 1100px) {
   .header__inner {
-    height: 45px;
+    padding: 20px 2%;
   }
 }
 
@@ -591,6 +586,11 @@ main {
     gap: 10px;
     align-items: center;
     padding-right: 5px;
+  }
+}
+@media screen and (max-width: 680px) {
+  .sp__nav {
+    padding-right: 15px;
   }
 }
 
@@ -988,6 +988,14 @@ main {
   font-size: 1.4rem;
   padding-bottom: 6px;
 }
+@media screen and (max-width: 742px) {
+  .word-card__index {
+    width: 25px;
+    text-align: left;
+    flex-shrink: 0;
+    padding-top: 5px;
+  }
+}
 .word-card__english {
   font-size: 2.4rem;
   font-weight: 700;
@@ -1074,6 +1082,7 @@ main {
 @media screen and (max-width: 742px) {
   .word-card__main-meaning .word-card__translation .highlight {
     font-size: 1.4rem;
+    font-weight: 700;
   }
 }
 .word-card__phrase, .word-card__derivative, .word-card__antonym {
@@ -1170,7 +1179,7 @@ main {
 
 @media screen and (max-width: 742px) {
   .word-area {
-    padding-left: 24px;
+    padding-left: 15px;
   }
 }
 
@@ -1190,6 +1199,19 @@ main {
     font-size: 1.1rem;
     padding: 0px 2px;
   }
+}
+
+.is-hide-english .word-card__english {
+  display: none;
+}
+
+.is-hide-english .word-card__english .word-highlight {
+  border-bottom: none !important;
+  color: inherit !important;
+}
+
+.is-hidden-en .word-highlight {
+  border-bottom: none !important;
 }
 
 .word-modal {
@@ -1283,6 +1305,7 @@ main {
 @media screen and (max-width: 742px) {
   .word-modal__header h2 {
     font-size: 2.2rem;
+    padding-bottom: 0;
   }
 }
 .word-modal__header p {
@@ -1306,6 +1329,8 @@ main {
 @media screen and (max-width: 742px) {
   .word-modal__header .word-modal__section-title {
     font-size: 1.6rem;
+    margin-top: 15px;
+    margin-bottom: 5px;
   }
 }
 .word-modal__header ul li {
@@ -1361,6 +1386,11 @@ main {
 .word-modal__body section {
   margin-bottom: 3.2rem;
 }
+@media screen and (max-width: 742px) {
+  .word-modal__body section {
+    margin-bottom: 1.2rem;
+  }
+}
 .word-modal__body .word-modal__section-title {
   font-size: 2rem;
   font-weight: bold;
@@ -1376,7 +1406,6 @@ main {
 }
 .word-modal__body .highlight {
   color: #199de8;
-  padding: 0 4px;
   font-weight: 700;
 }
 .word-modal__body .word-modal__example {
@@ -1415,6 +1444,11 @@ main {
 .word-modal__body .word-modal__usage li {
   padding-bottom: 12px;
 }
+@media screen and (max-width: 742px) {
+  .word-modal__body .word-modal__usage li {
+    padding-bottom: 0;
+  }
+}
 .word-modal__body .word-modal__usage li:last-of-type {
   padding-bottom: 0;
 }
@@ -1425,6 +1459,7 @@ main {
 @media screen and (max-width: 742px) {
   .word-modal__body .word-modal__usage .word-modal__usage-en {
     font-size: 1.4rem;
+    padding-bottom: 0;
   }
 }
 .word-modal__body .word-modal__usage .word-modal__usage-ja {
@@ -2084,7 +2119,7 @@ main {
 }
 .breadcrumb .breadcrumb__inner {
   max-width: 1440px;
-  padding: 0 4rem;
+  padding: 5px 40px;
   margin: 0 auto;
 }
 .breadcrumb__list {

@@ -17,9 +17,9 @@ body {
 }
 main {
   padding-top: 58px;
-  @include mq(sm) {
-    padding-top: 45px;
-  }
+  // @include mq(sm) {
+  //   padding-top: 45px;
+  // }
 }
 .inner {
   max-width: 1000px;

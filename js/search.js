@@ -47,6 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const suggestionOpen = document.querySelector("#js-search-results")?.children.length > 0;
 
+    // 🔹 ページ先頭なら必ず表示（追加_14対応）
+    if (currentScroll <= 0) {
+      searchBar.classList.add("is-visible");
+      scrollBuffer = 0;
+      lastScroll = currentScroll;
+      return;
+    }
+
     // ✅ TP-04: 検索候補が出ていたら常に表示
     if (suggestionOpen) {
       searchBar.classList.add("is-visible");
@@ -92,15 +100,29 @@ document.addEventListener("DOMContentLoaded", () => {
   
     const lowerKeyword = keyword.toLowerCase();
 
-    // ✅ 完全一致＋先頭一致のみ（部分一致は除外）
-    const exactMatch = searchWords.filter(w => w.english.toLowerCase() === lowerKeyword);
-    const startsWith = searchWords.filter(w =>
-      w.english.toLowerCase().startsWith(lowerKeyword) &&
-      w.english.toLowerCase() !== lowerKeyword
-    );
 
-    const filtered = [...exactMatch, ...startsWith];
+    // ✅ 完全一致・先頭一致を含むが、単語ごとに最小IDだけを残す
+  const matchedWords = searchWords.filter(w =>
+  w.english.toLowerCase().startsWith(lowerKeyword)
+  );
 
+  // ✅ 重複英単語を除外（IDが最小の1件だけ残す）
+  const uniqueWords = Object.values(
+    matchedWords.reduce((acc, word) => {
+      const key = word.english.toLowerCase();
+      if (!acc[key] || Number(word.id) < Number(acc[key].id)) {
+        acc[key] = word;
+      }
+      return acc;
+    }, {})
+  );
+
+  // ✅ 完全一致の単語が先頭に来るように並び替え
+  const filtered = uniqueWords.sort((a, b) => {
+    const aIsExact = a.english.toLowerCase() === lowerKeyword ? -1 : 1;
+    const bIsExact = b.english.toLowerCase() === lowerKeyword ? -1 : 1;
+    return aIsExact - bIsExact;
+  });
 
 
     const posMap = {

@@ -132,6 +132,12 @@
     font-weight: 500;
     font-size: 1.4rem;
     padding-bottom: 6px;
+    @include mq(md) {
+      width: 25px;
+      text-align: left;
+      flex-shrink: 0;
+      padding-top: 5px;
+    }
   }
 
   &__english {
@@ -214,6 +220,7 @@
         font-size: 1.8rem;
         @include mq(md) {
           font-size: 1.4rem;
+          font-weight: 700;
         }
       }
     }
@@ -302,7 +309,7 @@
 }
 .word-area {
   @include mq(md) {
-    padding-left: 24px;
+    padding-left: 15px;
   }
 }
 .word-card__part-of-speech {
@@ -319,4 +326,16 @@
     font-size: 1.1rem;
     padding: 0px 2px;
   }
+}
+
+.is-hide-english .word-card__english {
+  display: none;
+}
+
+.is-hide-english .word-card__english .word-highlight {
+  border-bottom: none !important;
+  color: inherit !important;
+}
+.is-hidden-en .word-highlight {
+  border-bottom: none !important;
 }

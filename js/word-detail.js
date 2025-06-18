@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     number: "数",               
     ordinal_number: "序数"      
   };
-  const posOrder = { verb: 1, noun: 2, adjective: 3 };
+  const posOrder = { "動": 1, "名": 2, "形": 3 };
 
   function sortMeanings(meanings) {
     return meanings.sort((a, b) => {
@@ -52,6 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
   window.openWordModal = async (word) => {
     const wordId = word.id;
     modal.dataset.currentId = wordId;
+
+    // 🔹スクロール位置をリセット
+    setTimeout(() => {
+      const scrollArea = document.querySelector(".word-modal__scroll-area");
+      if (scrollArea) scrollArea.scrollTop = 0;
+    }, 0);
 
     try {
       const res = await fetch(`${dictionaryPath}${wordId}.json`);
@@ -74,7 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
       // ✅ メイン訳の品詞を最上位に、残りは品詞優先順位に従って並べる
       // ✅ 品詞順の優先度
       const posOrder = { "動": 1, "名": 2, "形": 3 };
-      const mainPOS = word.part_of_speech || "";
+      const mainPOS = posMap[word.part_of_speech] || word.part_of_speech || ""; 
+      // const mainPOS = word.part_of_speech || "";
 
       // ✅ combinedをgroupedにまとめる
       const grouped = {};
@@ -86,10 +93,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // ✅ 優先順＋メイン品詞で並び替え
       const sortedGrouped = Object.entries(grouped).sort(([a], [b]) => {
-        if (a === mainPOS) return -1;
-        if (b === mainPOS) return 1;
-        return (posOrder[a] || 999) - (posOrder[b] || 999);
+        const aOrder = a === mainPOS ? -1 : (posOrder[a] || 999);
+        const bOrder = b === mainPOS ? -1 : (posOrder[b] || 999);
+        return aOrder - bOrder;
       });
+      
 
       // ✅ 出力
       meaningsEl.innerHTML = sortedGrouped
@@ -153,16 +161,37 @@ document.addEventListener("DOMContentLoaded", () => {
         usageEl.closest(".word-modal__section").style.display = "block";
         json.phrases.forEach(p => {
           const raw = p.english || "";
-          const en = raw.includes(`|${word.english}|`)
-            ? raw.replace(new RegExp(`\\|${word.english}\\|`, 'g'), `<span class="highlight">${word.english}</span>`).replace(/\|/g, '')
-            : raw;
-
+        
+          // ✅ |...|で囲まれた部分を検出
+          const replaced = raw.replace(/\|(.+?)\|/g, (match, inner) => {
+            // 英単語を含む場合だけハイライト（活用形でも許容）
+            if (inner.toLowerCase().includes(word.english.toLowerCase())) {
+              return `<span class="highlight">${inner}</span>`;
+            }
+            return inner; 
+          });
+        
+          // ✅ 句読点の直前にスペースが入らないよう調整
+          const clean = replaced.replace(/\s+([.,!?;:])/g, "$1");
+        
           usageEl.innerHTML += `
             <li>
-              <p class="word-modal__usage-en">${en}</p>
+              <p class="word-modal__usage-en">${clean}</p>
               <p class="word-modal__usage-ja">${p.translation}</p>
             </li>`;
         });
+        // json.phrases.forEach(p => {
+        //   const raw = p.english || "";
+        //   const en = raw.includes(`|${word.english}|`)
+        //     ? raw.replace(new RegExp(`\\|${word.english}\\|`, 'g'), `<span class="highlight">${word.english}</span>`).replace(/\|/g, '')
+        //     : raw;
+
+        //   usageEl.innerHTML += `
+        //     <li>
+        //       <p class="word-modal__usage-en">${en}</p>
+        //       <p class="word-modal__usage-ja">${p.translation}</p>
+        //     </li>`;
+        // });
       } else {
         usageEl.closest(".word-modal__section").style.display = "none";
       }
@@ -202,10 +231,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ✅ 前後切り替え（グレーアウト演出付き）
 function moveModal(direction) {
-  const fadeLayer = document.querySelector(".word-modal__fade-layer");
-  if (fadeLayer) {
-    fadeLayer.classList.add("is-active"); 
-  }
 
   const cards = [...document.querySelectorAll(".word-card")];
   const ids = cards.map(c => c.dataset.id);
@@ -213,6 +238,12 @@ function moveModal(direction) {
   const currentIndex = ids.indexOf(currentId);
   const targetId = direction === "next" ? ids[currentIndex + 1] : ids[currentIndex - 1];
   if (!targetId) return;
+
+  // 🔹 存在していれば暗転実行
+  const fadeLayer = document.querySelector(".word-modal__fade-layer");
+  if (fadeLayer) {
+    fadeLayer.classList.add("is-active");
+  }
 
   const targetWord = window.wordDataArray.find(w => w.id === targetId);
   if (targetWord) {
@@ -232,20 +263,30 @@ function moveModal(direction) {
 
   // スワイプ
   let touchStartX = 0;
-  let touchEndX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
 
-  modal.addEventListener("touchstart", (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-  });
+modal.addEventListener("touchstart", (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+});
 
-  modal.addEventListener("touchend", (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    const diff = touchEndX - touchStartX;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) moveModal("prev");
-      else moveModal("next");
-    }
-  });
+modal.addEventListener("touchend", (e) => {
+  touchEndX = e.changedTouches[0].screenX;
+  touchEndY = e.changedTouches[0].screenY;
+
+  const diffX = touchEndX - touchStartX;
+  const diffY = touchEndY - touchStartY;
+
+  // ✅ 横移動が大きく、かつ縦移動が小さいときのみスワイプと判定
+  if (Math.abs(diffX) > 50 && Math.abs(diffY) < 30) {
+    if (diffX > 0) moveModal("prev");
+    else moveModal("next");
+  }
+});
+
+
 
   // 音声再生
   document.addEventListener("click", (e) => {
